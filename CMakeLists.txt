@@ -1,6 +1,6 @@
 # list source files (.c) other than modulename.c
 set(SOURCEFILES
-	)
+    )
 
 # list include files (.h) that should be installed on system
 set(INCLUDEFILES

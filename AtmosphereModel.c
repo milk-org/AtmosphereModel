@@ -58,7 +58,7 @@
 // Module initialization macro in CLIcore.h
 // macro argument defines module name for bindings
 //
-INIT_MODULE_LIB(AtmosphericTurbulence)
+INIT_MODULE_LIB(AtmosphereModel)
 
 
 
