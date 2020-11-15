@@ -1,9 +1,20 @@
 # list source files (.c) other than modulename.c
 set(SOURCEFILES
+	AirMixture_ria.c
+	AtmosphereModel_build_stdAtmModel.c
+    AtmosphereModel_Create_from_CONF.c
+    AtmosphereModel_H2O_Saturation.c
+    AtmosphereModel_RefractionPath.c
+    AtmosphereModel_save_stdAtmModel.c
+    AtmosphereModel_stdAtmModel_ria.c
+    nrlmsise-00.c
+    nrlmsise-00_data.c
+    nrlmsise-00_test.c
     )
 
 # list include files (.h) that should be installed on system
 set(INCLUDEFILES
+	AtmosphereModel_Create_from_CONF.h
 	)
 
 # list scripts that should be installed on system

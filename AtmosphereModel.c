@@ -71,6 +71,7 @@ INIT_MODULE_LIB(AtmosphereModel)
  */
 static errno_t init_module_CLI()
 {
+	
 
     //CLI_CMD_CONNECT("func1", "create_image_with_value");
     
