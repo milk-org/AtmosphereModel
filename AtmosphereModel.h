@@ -11,6 +11,15 @@
 #define _ATMOSPHEREMODEL_H
 
 
+// number of elevation steps in vertical profiles
+#define ATM_VPROF_NBSTEP  10000
+
+// vertical step size [m]
+#define ATM_VPROF_STEPSIZE 10.0 
+
+
+
+
 typedef struct
 {
 	float rindex;     // refractive index 
@@ -43,10 +52,10 @@ typedef struct
 // vertical profile
 typedef struct
 {
-	long  NBpt; // number of smamples
-	float dz;   // elevation step
-	int   init;
-	float *val;
+//	long  NBpt; // number of smamples
+//	float dz;   // elevation step
+//	int   init;
+	float val[ATM_VPROF_NBSTEP];
 } ATMvPROF;
 
 
@@ -107,12 +116,12 @@ typedef struct
     float alpha1H2O;
 
 	// vertical profiles
-	long  vprofNBpt; // number of smamples
-	float vprofdz;   // elevation step
+	//long  vprofNBpt; // number of smamples
+	//float vprofdz;   // elevation step
 	 
 	// composition (densities)
 	ATMvPROF vprof_denstot; // total density
-	ATMvPROF *vprof_dens_species;
+	ATMvPROF vprof_dens_species[atmNBspecies];
 
 	// physical parameters
 	ATMvPROF vprof_density;

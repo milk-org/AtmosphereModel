@@ -39,14 +39,14 @@ long ATMOSPHEREMODEL_loadRIA(
     printf("Reading Refractive Index and Abs for %s\n", riadat->name);
 
 	riadat->init = 0;
-	
+	riadat->NBpt = 0;
 	riadat->Z = 1.0; // default
 	
     fp = fopen(fname, "r");
     if(fp == NULL)
     {
-        printf("ERROR: cannot open file \"%s\"\n", fname);
-        exit(0);
+        printf("cannot open file \"%s\"\n", fname);
+        return 0;
     }
 
     int r = fscanf(fp, "# %ld %lf %lf\n", &nbpt, &lmin, &lmax);
@@ -112,6 +112,7 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
 
 	ATMOSPHERE_MODEL atm;
 
+	DEBUG_TRACEPOINT("Reading atmosphere parameters from file %s", CONFFILE);
 
     strcpy(KEYWORD, "ZENITH_ANGLE");
     read_config_parameter(CONFFILE, KEYWORD, CONTENT);
@@ -185,12 +186,14 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
 
 
 
-    printf("Building reference atmoshpere model ...\n");
+    DEBUG_TRACEPOINT("Building standard atmoshpere model");
     AtmosphereModel_build_stdAtmModel(atm, "atm.txt");
 
 
-	// load refractive index data
+	
 	atm.speciesRIA.NBspecies = atmNBspecies;
+
+	DEBUG_TRACEPOINT("load refractive index data from %d species", atm.speciesRIA.NBspecies);
 
 	atm.speciesRIA.RIA_species = (RIAdata*) malloc(sizeof(RIAdata)*atm.speciesRIA.NBspecies);
 	
@@ -214,12 +217,12 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
 	{
 		char RIAfname[200];
 		sprintf(RIAfname, "./RefractiveIndices/RIA_%s.dat", atm.speciesRIA.RIA_species[sp].name);
-		ATMOSPHEREMODEL_loadRIA(RIAfname, &atm.speciesRIA.RIA_species[sp]); 
+		ATMOSPHEREMODEL_loadRIA(RIAfname, &atm.speciesRIA.RIA_species[sp]);
 	}
 
 
 
-    // compressibility factors at STP
+    DEBUG_TRACEPOINT("Set compressibility factors at STP");
 
     atm.speciesRIA.RIA_species[speciesN2].Z = 0.99971;
     // 1.013 bar and 15 °C
@@ -276,6 +279,7 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
 
     // ***************** refractive index as a function of lambda at site ****************************
 
+	DEBUG_TRACEPOINT("Write RindexSite.txt");
     fp  = fopen("RindexSite.txt", "w");
     for(double lambda = 0.2e-6; lambda < 20.0e-6; lambda *= 1.0 + 1e-6)
     {	
@@ -286,9 +290,9 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
     fclose(fp);
 
 
+	DEBUG_TRACEPOINT("Write Refract.txt");
     fp = fopen("Refract.txt", "w");
     fclose(fp);
-
 
 
     // *************** LIGHT PATH THROUGH ATMOSPHERE AT TWO SEPARATE WAVELENGTHS ***********************
