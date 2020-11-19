@@ -22,8 +22,8 @@
 
 typedef struct
 {
-	float rindex;     // refractive index 
-	float abscoeff;   // absorption coefficient [m-1]
+	double rindex;     // refractive index 
+	double abscoeff;   // absorption coefficient [m-1]
 } RIAvalue;
 
 
@@ -55,7 +55,7 @@ typedef struct
 //	long  NBpt; // number of smamples
 //	float dz;   // elevation step
 //	int   init;
-	float val[ATM_VPROF_NBSTEP];
+	double val[ATM_VPROF_NBSTEP];
 } ATMvPROF;
 
 
@@ -91,7 +91,7 @@ typedef struct
 //
 typedef struct
 {
-    float ZenithAngle;
+    double ZenithAngle;
 
 	// refractive indices and absorption coefficients
 	ATM_SPECIES_RIADATA speciesRIA; 

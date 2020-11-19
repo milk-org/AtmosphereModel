@@ -65,10 +65,13 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(
     for(int spindex=0; spindex < atm.speciesRIA.NBspecies; spindex++)
     {
 		densarray[spindex] = ((1.0 - ifrac) * atm.vprof_dens_species[spindex].val[zindex] + ifrac * atm.vprof_dens_species[spindex].val[zindex + 1]);
+		
+		//printf("densarray %2d %5ld : %g %g\n", spindex, zindex, densarray[spindex], atm.vprof_dens_species[spindex].val[zindex]);
+		
 		denstotal += densarray[spindex];
 	}
 	
-	DEBUG_TRACEPOINT("denstotal = %g", denstotal);
+	//printf("denstotal = %g\n", denstotal);
 
     ria = AirMixture_ria(atm.speciesRIA, lambda, densarray);
 

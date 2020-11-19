@@ -7,7 +7,7 @@
 #define _ATMOSPHEREMODEL_BUILD_STDATMMODEL_H
 
 int AtmosphereModel_build_stdAtmModel(
-	ATMOSPHERE_MODEL atm,
+	ATMOSPHERE_MODEL *atm,
     const char *restrict fname
 );
 

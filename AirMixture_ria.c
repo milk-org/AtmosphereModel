@@ -5,6 +5,8 @@
 
 
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "AtmosphereModel.h"
 #include "OpticsMaterials/OpticsMaterials_n.h"
@@ -33,9 +35,10 @@ RIAvalue AirMixture_ria(
     double LLcumul = 0.0;
 
 
+
     for(int specindex = 0; specindex < atmNBspecies; specindex++)
     {
-		float abscoeff = 0.0;
+		double abscoeff = 0.0;
 		double n;
 
         if(speciesRIA.RIA_species[specindex].init == 1)
@@ -75,6 +78,8 @@ RIAvalue AirMixture_ria(
         {
             n = OpticsMaterials_n(OpticsMaterials_code(
                                       speciesRIA.RIA_species[specindex].name), lambda);
+            //printf("    %20s  %.9f\n", speciesRIA.RIA_species[specindex].name, n);
+                                      
             if (n < 0.0) // not available
             {
 				n = 1.0; // default
@@ -89,10 +94,14 @@ RIAvalue AirMixture_ria(
         ria.abscoeff += tmpc * abscoeff;
         denstotal += densarray[specindex];
         LLcumul += LL;
+        //printf("  %2d     %.6f  %g\n", specindex, LL, densarray[specindex]);
 
     }
 
     ria.rindex = sqrt((2.0 * LLcumul + 1.0) / (1.0 - LLcumul));
+
+	//printf("ria.rindex = %.6f\n", ria.rindex);
+
 
     return ria;
 }

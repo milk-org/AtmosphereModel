@@ -105,120 +105,75 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
     float slambda
 )
 {
-    char KEYWORD[200];
-    char CONTENT[200];
-    
-    FILE *fp;
+    ATMOSPHERE_MODEL atm;
 
-	ATMOSPHERE_MODEL atm;
+    DEBUG_TRACEPOINT("Reading atmosphere parameters from file %s", CONFFILE);
 
-	DEBUG_TRACEPOINT("Reading atmosphere parameters from file %s", CONFFILE);
+    atm.ZenithAngle = read_config_parameter_float(CONFFILE, "ZENITH_ANGLE");
+    atm.TimeDayOfYear = read_config_parameter_long(CONFFILE, "TIME_DAY_OF_YEAR");
+    atm.TimeLocalSolarTime = read_config_parameter_long(CONFFILE, "TIME_LOCAL_SOLAR_TIME");
 
-    strcpy(KEYWORD, "ZENITH_ANGLE");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.ZenithAngle = atof(CONTENT);
-
-
-    strcpy(KEYWORD, "TIME_DAY_OF_YEAR");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.TimeDayOfYear = atoi(CONTENT);
-
-    strcpy(KEYWORD, "TIME_LOCAL_SOLAR_TIME");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.TimeLocalSolarTime = atoi(CONTENT);
-
-
-    strcpy(KEYWORD, "SITE_LATITUDE");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteLat = atof(CONTENT);
-
-    strcpy(KEYWORD, "SITE_LONGITUDE");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteLong = atof(CONTENT);
-
-
-    strcpy(KEYWORD, "SITE_ALT");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteAlt = atof(CONTENT);
-
+    atm.SiteLat    = read_config_parameter_float(CONFFILE, "SITE_LATITUDE");
+    atm.SiteLong   = read_config_parameter_float(CONFFILE, "SITE_LONGITUDE");
+    atm.SiteAlt    = read_config_parameter_float(CONFFILE, "SITE_ALT");
 
 
     // temperature at site
-    strcpy(KEYWORD, "SITE_TP_AUTO");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteTPauto = atoi(CONTENT);
+    atm.SiteTPauto = read_config_parameter_float(CONFFILE, "SITE_TP_AUTO");
 
     // temperature at site
-    strcpy(KEYWORD, "SITE_TEMP");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteTemp = atof(CONTENT);
+    atm.SiteTemp   = read_config_parameter_float(CONFFILE, "SITE_TEMP");
 
     // pressure at site
-    strcpy(KEYWORD, "SITE_PRESS");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SitePress = atof(CONTENT);
+    atm.SitePress  = read_config_parameter_float(CONFFILE, "SITE_PRESS");
 
-
-
-
-
-    strcpy(KEYWORD, "CO2_PPM");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.CO2_ppm = atof(CONTENT);
+    atm.CO2_ppm    = read_config_parameter_float(CONFFILE, "CO2_PPM");
 
 
     // water
-    strcpy(KEYWORD, "SITE_H2O_METHOD");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteH2OMethod = atoi(CONTENT);
-
-    strcpy(KEYWORD, "SITE_TPW");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteTPW = atof(CONTENT);
-
-    strcpy(KEYWORD, "SITE_RH");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SiteRH = atof(CONTENT);
-
-    strcpy(KEYWORD, "SITE_PW_SCALEH");
-    read_config_parameter(CONFFILE, KEYWORD, CONTENT);
-    atm.SitePWSH = atof(CONTENT);
-
+    atm.SiteH2OMethod = read_config_parameter_long(CONFFILE, "SITE_H2O_METHOD");
+    atm.SiteTPW = read_config_parameter_float(CONFFILE, "SITE_TPW");
+    atm.SiteRH = read_config_parameter_float(CONFFILE, "SITE_RH");
+    atm.SitePWSH = read_config_parameter_float(CONFFILE, "SITE_PW_SCALEH");
 
 
     DEBUG_TRACEPOINT("Building standard atmoshpere model");
-    AtmosphereModel_build_stdAtmModel(atm, "atm.txt");
+    AtmosphereModel_build_stdAtmModel(&atm, "atm.txt");
+
+    printf("atm.SiteRH = %f\n", atm.SiteRH);
 
 
-	
-	atm.speciesRIA.NBspecies = atmNBspecies;
+    atm.speciesRIA.NBspecies = atmNBspecies;
 
-	DEBUG_TRACEPOINT("load refractive index data from %d species", atm.speciesRIA.NBspecies);
+    DEBUG_TRACEPOINT("load refractive index data from %d species",
+                     atm.speciesRIA.NBspecies);
 
-	atm.speciesRIA.RIA_species = (RIAdata*) malloc(sizeof(RIAdata)*atm.speciesRIA.NBspecies);
-	
-	strcpy(atm.speciesRIA.RIA_species[speciesN2].name, "N2");
-	strcpy(atm.speciesRIA.RIA_species[speciesO2].name, "O2");
-	strcpy(atm.speciesRIA.RIA_species[speciesAr].name, "Ar");
-	strcpy(atm.speciesRIA.RIA_species[speciesH2O].name, "H2O");
-	strcpy(atm.speciesRIA.RIA_species[speciesCO2].name, "CO2");
-	strcpy(atm.speciesRIA.RIA_species[speciesNe].name, "Ne");
-	strcpy(atm.speciesRIA.RIA_species[speciesHe].name, "He");
-	strcpy(atm.speciesRIA.RIA_species[speciesCH4].name, "CH4");
-	strcpy(atm.speciesRIA.RIA_species[speciesKr].name, "Kr");
-	strcpy(atm.speciesRIA.RIA_species[speciesH2].name, "H2");
-	strcpy(atm.speciesRIA.RIA_species[speciesO3].name, "O3");
-	strcpy(atm.speciesRIA.RIA_species[speciesN].name, "N");
-	strcpy(atm.speciesRIA.RIA_species[speciesO].name, "O");
-	strcpy(atm.speciesRIA.RIA_species[speciesH].name, "H");
-	
-	
-	for(int sp=0; sp<atm.speciesRIA.NBspecies; sp++)
-	{
-		char RIAfname[200];
-		sprintf(RIAfname, "./RefractiveIndices/RIA_%s.dat", atm.speciesRIA.RIA_species[sp].name);
-		ATMOSPHEREMODEL_loadRIA(RIAfname, &atm.speciesRIA.RIA_species[sp]);
-	}
+    atm.speciesRIA.RIA_species = (RIAdata *) malloc(sizeof(RIAdata) *
+                                 atm.speciesRIA.NBspecies);
+
+    strcpy(atm.speciesRIA.RIA_species[speciesN2].name, "N2");
+    strcpy(atm.speciesRIA.RIA_species[speciesO2].name, "O2");
+    strcpy(atm.speciesRIA.RIA_species[speciesAr].name, "Ar");
+    strcpy(atm.speciesRIA.RIA_species[speciesH2O].name, "H2O");
+    strcpy(atm.speciesRIA.RIA_species[speciesCO2].name, "CO2");
+    strcpy(atm.speciesRIA.RIA_species[speciesNe].name, "Ne");
+    strcpy(atm.speciesRIA.RIA_species[speciesHe].name, "He");
+    strcpy(atm.speciesRIA.RIA_species[speciesCH4].name, "CH4");
+    strcpy(atm.speciesRIA.RIA_species[speciesKr].name, "Kr");
+    strcpy(atm.speciesRIA.RIA_species[speciesH2].name, "H2");
+    strcpy(atm.speciesRIA.RIA_species[speciesO3].name, "O3");
+    strcpy(atm.speciesRIA.RIA_species[speciesN].name, "N");
+    strcpy(atm.speciesRIA.RIA_species[speciesO].name, "O");
+    strcpy(atm.speciesRIA.RIA_species[speciesH].name, "H");
+
+
+    for(int sp = 0; sp < atm.speciesRIA.NBspecies; sp++)
+    {
+        char RIAfname[200];
+        sprintf(RIAfname, "./RefractiveIndices/RIA_%s.dat",
+                atm.speciesRIA.RIA_species[sp].name);
+        ATMOSPHEREMODEL_loadRIA(RIAfname, &atm.speciesRIA.RIA_species[sp]);
+    }
 
 
 
@@ -270,94 +225,56 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(
 
     atm.speciesRIA.RIA_species[speciesH].Z = 1.0; // TO BE UPDATED
 
-	
 
 
 
+	if(0)
+    {
+        // ***************** refractive index as a function of lambda at site ****************************
 
+        FILE *fp;
 
-
-    // ***************** refractive index as a function of lambda at site ****************************
-
-	DEBUG_TRACEPOINT("Write RindexSite.txt");
-    fp  = fopen("RindexSite.txt", "w");
-    for(double lambda = 0.2e-6; lambda < 20.0e-6; lambda *= 1.0 + 1e-6)
-    {	
-		RIAvalue ria = AtmosphereModel_stdAtmModel_ria(atm, atm.SiteAlt, lambda, 0);        
-        fprintf(fp, "%.8g %.14f %.14f\n", lambda, ria.rindex, ria.abscoeff);
-        //  printf("%g %.10f\n", lambda, n);
+        DEBUG_TRACEPOINT("Write RindexSite.txt");
+        fp  = fopen("RindexSite.txt", "w");
+        for(double lambda = 0.5e-6; lambda < 2e-6; lambda *= 1.0 + 1e-3)
+        {
+            RIAvalue ria = AtmosphereModel_stdAtmModel_ria(atm, atm.SiteAlt, lambda, 0);
+            fprintf(fp, "%.8g %.14f %.14f\n", lambda, ria.rindex, ria.abscoeff);
+            //printf("%10.6f    %.10f\n", lambda * 1.0e6, ria.rindex);
+            fflush(stdout);
+        }
+        fclose(fp);
     }
-    fclose(fp);
 
-
-	DEBUG_TRACEPOINT("Write Refract.txt");
-    fp = fopen("Refract.txt", "w");
-    fclose(fp);
 
 
     // *************** LIGHT PATH THROUGH ATMOSPHERE AT TWO SEPARATE WAVELENGTHS ***********************
 
-
-
-
-
-
     AtmosphereModel_RefractionPath(atm, 0.55e-6, atm.ZenithAngle, 1);
-	EXECUTE_SYSTEM_COMMAND("mv refractpath.txt refractpath_0550.txt");
+    EXECUTE_SYSTEM_COMMAND("mv refractpath.txt refractpath_0550.txt");
 
     AtmosphereModel_RefractionPath(atm, slambda, atm.ZenithAngle, 1);
     EXECUTE_SYSTEM_COMMAND("mv refractpath.txt refractpath_%04ld.txt",
-            (long)(1e9 * slambda + 0.5));
+                           (long)(1e9 * slambda + 0.5));
 
-
-    // refractive angle as a function of wavelength
-    printf("Computing refraction angle ... \n");
-    fflush(stdout);
-    fp = fopen("RefractAngle.dat", "w");
-    for(double l = 0.5e-6; l < 10.0e-6; l *= 1.0 + 1e-3)
+	if(0)
     {
-        fprintf(fp, "%20.18f  %.6f\n", l, AtmosphereModel_RefractionPath(atm, l, atm.ZenithAngle,
-                0));
+        // refractive angle as a function of wavelength
+        printf("Computing refraction angle ... \n");
+        fflush(stdout);
+        FILE *fp;
+        fp = fopen("RefractAngle.dat", "w");
+        for(double l = 0.5e-6; l < 10.0e-6; l *= 1.0 + 1e-2)
+        {
+            fprintf(fp, "%20.18f  %.6f\n", l, AtmosphereModel_RefractionPath(atm, l,
+                    atm.ZenithAngle,
+                    0));
+        }
+        fclose(fp);
+        printf("done\n");
+        fflush(stdout);
     }
-    fclose(fp);
-    printf("done\n");
-    fflush(stdout);
 
-    // **************** REFRACTION AND TRANSMISSION AS A FUNCTION OF WAVELENGTH *********************
-
-    // precompute wavelength array and indices
-    /*  llistep = 1;
-      llistart = 0;
-      while(RIA_N2_lambda[llistart]<4.1e-6)
-          llistart++;
-      lliend = llistart;
-      while(RIA_N2_lambda[lliend]<4.2e-6)
-          lliend++;
-      NB_comp_array = (lliend-llistart)/llistep;
-      comp_array_lambda = (double*) malloc(sizeof(double)*NB_comp_array);
-      comp_array_lli = (long*) malloc(sizeof(double)*NB_comp_array);
-
-      for(li=0; li<NB_comp_array; li++)
-      {
-          lli = llistart + li*llistep;
-          comp_array_lambda[li] = RIA_N2_lambda[lli];
-          comp_array_lli[li] = lli;
-      }
-
-      for(li=0; li<NB_comp_array; li++)
-      {
-          lambda = comp_array_lambda[li];
-          lliprecomp = comp_array_lli[li];
-          rangle = AtmosphereModel_RefractionPath(lambda, ZenithAngle, 0);
-          fp = fopen("Refract.txt", "a");
-          fprintf(fp, "%g %.12f %.12f\n", lambda, rangle, v_TRANSM);
-          fclose(fp);
-      }
-      lliprecomp = -1;
-
-      free(comp_array_lambda);
-      free(comp_array_lli);
-    */
 
     return atm;
 }
