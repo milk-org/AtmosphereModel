@@ -1,4 +1,4 @@
-set(LIBNAME "milkatmospheremodel")
+set(LIBNAME "milkAtmosphereModel")
 
 message("")
 message(" SRCNAME = ${SRCNAME} -> LIBNAME = ${LIBNAME}")
