@@ -7,8 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "COREMOD_tools/COREMOD_tools.h"
 #include "CommandLineInterface/CLIcore.h"
+
+#include "COREMOD_tools/COREMOD_tools.h"
 
 #include "AtmosphereModel.h"
 #include "AtmosphereModel_RefractionPath.h"
