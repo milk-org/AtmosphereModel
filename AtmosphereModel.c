@@ -4,7 +4,6 @@
  *
  */
 
-
 #define _GNU_SOURCE
 
 /* ================================================================== */
@@ -19,12 +18,7 @@
 #define MODULE_SHORTNAME_DEFAULT "atmmodel"
 
 // Module short description
-#define MODULE_DESCRIPTION       "Atmosphere model"
-
-
-
-
-
+#define MODULE_DESCRIPTION "Atmosphere model"
 
 /* ================================================================== */
 /* ================================================================== */
@@ -32,10 +26,7 @@
 /* ================================================================== */
 /* ================================================================== */
 
-
 #include "CommandLineInterface/CLIcore.h"
-
-
 
 //
 // Forward declarations are required to connect CLI calls to functions
@@ -43,11 +34,6 @@
 //
 //#include "make_master_turbulence_screen.h"
 //#include "make_master_turbulence_screen_pow.h"
-
-
-
-
-
 
 /* ================================================================== */
 /* ================================================================== */
@@ -60,8 +46,6 @@
 //
 INIT_MODULE_LIB(AtmosphereModel)
 
-
-
 /**
  * @brief Initialize module CLI
  *
@@ -71,22 +55,13 @@ INIT_MODULE_LIB(AtmosphereModel)
  */
 static errno_t init_module_CLI()
 {
-	
 
     //CLI_CMD_CONNECT("func1", "create_image_with_value");
-    
+
     //AtmosphericTurbulence_make_master_turbulence_screen_addCLIcmd();
-	//AtmosphericTurbulence_make_master_turbulence_screen_pow_addCLIcmd();
+    //AtmosphericTurbulence_make_master_turbulence_screen_pow_addCLIcmd();
 
     // optional: add atexit functions here
 
     return RETURN_SUCCESS;
 }
-
-
-
-
-
-
-
-
