@@ -8,8 +8,9 @@
 
 #include "CommandLineInterface/CLIcore.h"
 
-#include "AirMixture_ria.h"
 #include "AtmosphereModel.h"
+
+#include "AirMixture_ria.h"
 
 //
 // alt [m]
