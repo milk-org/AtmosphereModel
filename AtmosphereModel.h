@@ -24,11 +24,11 @@ typedef struct
 // refractive index and absorption data for a signle molecule
 typedef struct
 {
-    char name[8];
-    int init;
-    double lambdamin; // [m]
-    double lambdamax; // [m]
-    long NBpt;
+    char    name[8];
+    int     init;
+    double  lambdamin; // [m]
+    double  lambdamax; // [m]
+    long    NBpt;
     double *lambda;
     double *rindex;
     double *abs;
@@ -48,24 +48,24 @@ typedef struct
 
 // assign index to each species
 #define atmNBspecies 14
-#define speciesN2 0
-#define speciesO2 1
-#define speciesAr 2
-#define speciesH2O 3
-#define speciesCO2 4
-#define speciesNe 5
-#define speciesHe 6
-#define speciesCH4 7
-#define speciesKr 8
-#define speciesH2 9
-#define speciesO3 10
-#define speciesN 11
-#define speciesO 12
-#define speciesH 13
+#define speciesN2    0
+#define speciesO2    1
+#define speciesAr    2
+#define speciesH2O   3
+#define speciesCO2   4
+#define speciesNe    5
+#define speciesHe    6
+#define speciesCH4   7
+#define speciesKr    8
+#define speciesH2    9
+#define speciesO3    10
+#define speciesN     11
+#define speciesO     12
+#define speciesH     13
 
 typedef struct
 {
-    int NBspecies;
+    int      NBspecies;
     RIAdata *RIA_species; // refractive index and abs coeff
 } ATM_SPECIES_RIADATA;
 
@@ -78,7 +78,7 @@ typedef struct
     // refractive indices and absorption coefficients
     ATM_SPECIES_RIADATA speciesRIA;
 
-    int TimeDayOfYear;
+    int   TimeDayOfYear;
     float TimeLocalSolarTime;
 
     float SiteLat;
@@ -86,7 +86,7 @@ typedef struct
     float SiteAlt;
     float CO2_ppm;
 
-    int SiteTPauto;
+    int   SiteTPauto;
     float SiteTemp;
     float SitePress;
 
@@ -110,10 +110,10 @@ typedef struct
     ATMvPROF vprof_pressure;
     ATMvPROF vprof_RH;
 
-    long NB_comp_array;
+    long    NB_comp_array;
     double *comp_array_lambda;
-    long *comp_array_lli;
-    int lliprecomp; // if >=0, use this index in array
+    long   *comp_array_lli;
+    int     lliprecomp; // if >=0, use this index in array
 
     int lliprecompN2;  // if >=0, use this index in array
     int lliprecompO2;  // if >=0, use this index in array

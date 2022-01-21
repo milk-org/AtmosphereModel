@@ -20,7 +20,10 @@
 // and absorption coefficient
 //
 //
-RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm, float alt, float lambda, int mode)
+RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm,
+                                         float            alt,
+                                         float            lambda,
+                                         int              mode)
 {
     RIAvalue ria;
 
@@ -31,7 +34,7 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm, float alt, float 
 
     double *densarray;
 
-    long zindex = (long)(alt / ATM_VPROF_STEPSIZE);
+    long zindex = (long) (alt / ATM_VPROF_STEPSIZE);
     if (zindex > ATM_VPROF_NBSTEP - 2)
     {
         zindex = ATM_VPROF_NBSTEP - 1;
@@ -54,11 +57,12 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm, float alt, float 
 
     // densities [cm-3]
     double denstotal = 0.0;
-    densarray = (double *)malloc(sizeof(double) * atm.speciesRIA.NBspecies);
+    densarray = (double *) malloc(sizeof(double) * atm.speciesRIA.NBspecies);
     for (int spindex = 0; spindex < atm.speciesRIA.NBspecies; spindex++)
     {
-        densarray[spindex] = ((1.0 - ifrac) * atm.vprof_dens_species[spindex].val[zindex] +
-                              ifrac * atm.vprof_dens_species[spindex].val[zindex + 1]);
+        densarray[spindex] =
+            ((1.0 - ifrac) * atm.vprof_dens_species[spindex].val[zindex] +
+             ifrac * atm.vprof_dens_species[spindex].val[zindex + 1]);
 
         //printf("densarray %2d %5ld : %g %g\n", spindex, zindex, densarray[spindex], atm.vprof_dens_species[spindex].val[zindex]);
 
@@ -75,10 +79,13 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm, float alt, float 
         printf("alt = %f m\n", alt);
         printf("zindex = %ld\n", zindex);
         printf("\n");
-        printf("     N2  =  %5.3f\n", densarray[speciesN2] * 1.0e6 / LoschmidtConstant);
-        printf("     O2  =  %5.3f\n", densarray[speciesO2] * 1.0e6 / LoschmidtConstant);
+        printf("     N2  =  %5.3f\n",
+               densarray[speciesN2] * 1.0e6 / LoschmidtConstant);
+        printf("     O2  =  %5.3f\n",
+               densarray[speciesO2] * 1.0e6 / LoschmidtConstant);
         printf("\n");
-        printf("denstotal = %g    %g\n", denstotal,
+        printf("denstotal = %g    %g\n",
+               denstotal,
                denstotal * 1.0e6 / LoschmidtConstant); // TEST
         printf("\n");
     }
@@ -88,7 +95,10 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm, float alt, float 
     return ria;
 }
 
-double AtmosphereModel_stdAtmModel_N(ATMOSPHERE_MODEL atm, float alt, float lambda, int mode)
+double AtmosphereModel_stdAtmModel_N(ATMOSPHERE_MODEL atm,
+                                     float            alt,
+                                     float            lambda,
+                                     int              mode)
 {
     RIAvalue ria;
 

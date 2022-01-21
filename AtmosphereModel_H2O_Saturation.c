@@ -33,13 +33,15 @@ double AtmosphereModel_H2O_Saturation(double T)
     {
         ups = 1.0 - T / Tc;
         val = Pc * exp(Tc / T *
-                       (C1 * ups + C2 * pow(ups, 1.5) + C3 * pow(ups, 3.0) + C4 * pow(ups, 3.5) + C5 * pow(ups, 4.0) +
+                       (C1 * ups + C2 * pow(ups, 1.5) + C3 * pow(ups, 3.0) +
+                        C4 * pow(ups, 3.5) + C5 * pow(ups, 4.0) +
                         C6 * pow(ups, 7.5)));
     }
     else
     {
         ups = T / Tn;
-        val = Pn * exp(a0 * (1.0 - pow(ups, -1.5)) + a1 * (1.0 - pow(ups, -1.25)));
+        val = Pn *
+              exp(a0 * (1.0 - pow(ups, -1.5)) + a1 * (1.0 - pow(ups, -1.25)));
     }
 
     return val;

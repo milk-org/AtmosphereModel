@@ -30,11 +30,11 @@
 void test_gtd7(void)
 {
     struct nrlmsise_output output[17];
-    struct nrlmsise_input input[17];
-    struct nrlmsise_flags flags;
-    struct ap_array aph;
-    int i;
-    int j;
+    struct nrlmsise_input  input[17];
+    struct nrlmsise_flags  flags;
+    struct ap_array        aph;
+    int                    i;
+    int                    j;
     /* input values */
     for (i = 0; i < 7; i++)
         aph.a[i] = 100;
@@ -43,35 +43,35 @@ void test_gtd7(void)
         flags.switches[i] = 1;
     for (i = 0; i < 17; i++)
     {
-        input[i].doy = 172;
-        input[i].year = 0; /* without effect */
-        input[i].sec = 29000;
-        input[i].alt = 400;
-        input[i].g_lat = 60;
+        input[i].doy    = 172;
+        input[i].year   = 0; /* without effect */
+        input[i].sec    = 29000;
+        input[i].alt    = 400;
+        input[i].g_lat  = 60;
         input[i].g_long = -70;
-        input[i].lst = 16;
-        input[i].f107A = 150;
-        input[i].f107 = 150;
-        input[i].ap = 4;
+        input[i].lst    = 16;
+        input[i].f107A  = 150;
+        input[i].f107   = 150;
+        input[i].ap     = 4;
     }
-    input[1].doy = 81;
-    input[2].sec = 75000;
-    input[2].alt = 1000;
-    input[3].alt = 100;
-    input[10].alt = 0;
-    input[11].alt = 10;
-    input[12].alt = 30;
-    input[13].alt = 50;
-    input[14].alt = 70;
-    input[16].alt = 100;
-    input[4].g_lat = 0;
+    input[1].doy    = 81;
+    input[2].sec    = 75000;
+    input[2].alt    = 1000;
+    input[3].alt    = 100;
+    input[10].alt   = 0;
+    input[11].alt   = 10;
+    input[12].alt   = 30;
+    input[13].alt   = 50;
+    input[14].alt   = 70;
+    input[16].alt   = 100;
+    input[4].g_lat  = 0;
     input[5].g_long = 0;
-    input[6].lst = 4;
-    input[7].f107A = 70;
-    input[8].f107 = 180;
-    input[9].ap = 40;
-    input[15].ap_a = &aph;
-    input[16].ap_a = &aph;
+    input[6].lst    = 4;
+    input[7].f107A  = 70;
+    input[8].f107   = 180;
+    input[9].ap     = 40;
+    input[15].ap_a  = &aph;
+    input[16].ap_a  = &aph;
     /* evaluate 0 to 14 */
     for (i = 0; i < 15; i++)
         gtd7(&input[i], &flags, &output[i]);

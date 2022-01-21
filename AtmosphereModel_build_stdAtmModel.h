@@ -6,6 +6,7 @@
 #ifndef _ATMOSPHEREMODEL_BUILD_STDATMMODEL_H
 #define _ATMOSPHEREMODEL_BUILD_STDATMMODEL_H
 
-int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm, const char *restrict fname);
+int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
+                                      const char *restrict fname);
 
 #endif

@@ -14,7 +14,8 @@
 //
 // This routine assumes Z=1
 //
-RIAvalue AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *densarray)
+RIAvalue
+AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *densarray)
 {
     RIAvalue ria;
 
@@ -38,20 +39,23 @@ RIAvalue AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *d
             long lli = lliprecomp[specindex];
             if (lli < 0)
             {
-                lli = (long)(speciesRIA.RIA_species[specindex].NBpt / 2);
+                lli = (long) (speciesRIA.RIA_species[specindex].NBpt / 2);
             }
 
             int llistep = 100;
-            int llidir = 1; // direction : -1=neg, 1=pos
+            int llidir  = 1; // direction : -1=neg, 1=pos
             while (llistep != 1)
             {
-                llistep = (long)(0.3 * llistep);
+                llistep = (long) (0.3 * llistep);
                 if (llistep == 0)
                 {
                     llistep = 1;
                 }
-                while ((speciesRIA.RIA_species[specindex].lambda[lli] * llidir < lambda * llidir) &&
-                       (lli < speciesRIA.RIA_species[specindex].NBpt - llistep) && (lli > llistep))
+                while (
+                    (speciesRIA.RIA_species[specindex].lambda[lli] * llidir <
+                     lambda * llidir) &&
+                    (lli < speciesRIA.RIA_species[specindex].NBpt - llistep) &&
+                    (lli > llistep))
                 {
                     lli += llidir * llistep;
                 }
@@ -59,7 +63,8 @@ RIAvalue AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *d
             }
             float alpha =
                 (lambda - speciesRIA.RIA_species[specindex].lambda[lli]) /
-                (speciesRIA.RIA_species[specindex].lambda[lli + 1] - speciesRIA.RIA_species[specindex].lambda[lli]);
+                (speciesRIA.RIA_species[specindex].lambda[lli + 1] -
+                 speciesRIA.RIA_species[specindex].lambda[lli]);
             //    printf("%d   alpha = %f \n", llidir, alpha);
             lliprecomp[specindex] = lli;
             n = (1.0 - alpha) * speciesRIA.RIA_species[specindex].rindex[lli] +
@@ -68,7 +73,9 @@ RIAvalue AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *d
         }
         else
         {
-            n = OpticsMaterials_n(OpticsMaterials_code(speciesRIA.RIA_species[specindex].name), lambda);
+            n = OpticsMaterials_n(
+                OpticsMaterials_code(speciesRIA.RIA_species[specindex].name),
+                lambda);
             //printf("    %20s  %.9f\n", speciesRIA.RIA_species[specindex].name, n);
 
             if (n < 0.0) // not available
@@ -79,7 +86,9 @@ RIAvalue AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *d
             abscoeff = 0.0;
         }
         double LL = (n * n - 1) / (n * n + 2);
-        double tmpc = densarray[specindex] / (LoschmidtConstant / 1e6 / speciesRIA.RIA_species[specindex].Z);
+        double tmpc =
+            densarray[specindex] /
+            (LoschmidtConstant / 1e6 / speciesRIA.RIA_species[specindex].Z);
         LL *= tmpc;
         ria.abscoeff += tmpc * abscoeff;
         denstotal += densarray[specindex];
