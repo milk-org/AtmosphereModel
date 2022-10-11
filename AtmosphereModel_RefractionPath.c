@@ -19,7 +19,7 @@ double AtmosphereModel_RefractionPath(ATMOSPHERE_MODEL atm,
                                       int              WritePath)
 {
     double h0,
-        h1; // elevation (from Earth center direction, 0 at Earth surface)
+           h1; // elevation (from Earth center direction, 0 at Earth surface)
     double lstep = 20.0;      // beam distance step [m]
     double Re    = 6371000.0; // Earth radius [m]
     double alphae;            // angle to center of Earth
@@ -39,7 +39,7 @@ double AtmosphereModel_RefractionPath(ATMOSPHERE_MODEL atm,
     Zangle0     = Zangle;
     offsetangle = 0.0;
 
-    while ((iter < 20) && (errV > 0.00001))
+    while((iter < 20) && (errV > 0.00001))
     {
         //printf("----------------- iter %ld ---------------\n", iter);
         // upward path
@@ -51,14 +51,14 @@ double AtmosphereModel_RefractionPath(ATMOSPHERE_MODEL atm,
         RIAvalue riav0 = AtmosphereModel_stdAtmModel_ria(atm, h0, lambda, 0);
         n0             = riav0.rindex;
 
-        if (WritePath)
+        if(WritePath)
         {
             fp = fopen("refractpath.txt", "w");
         }
         pathl = 0.0;
         h1    = 0.0;
         flux  = 1.0;
-        while (h1 < 99000.0)
+        while(h1 < 99000.0)
         {
             x1 = x0 + lstep * sin(alpha);
             y1 = y0 + lstep * cos(alpha);
@@ -83,7 +83,7 @@ double AtmosphereModel_RefractionPath(ATMOSPHERE_MODEL atm,
             h0 = h1;
 
             pathl += lstep;
-            if (WritePath)
+            if(WritePath)
             {
                 fprintf(fp,
                         "%10.3f %10.3f %10.3f  %12.9f  %20g    %20g   %20g\n",
@@ -96,7 +96,7 @@ double AtmosphereModel_RefractionPath(ATMOSPHERE_MODEL atm,
                         y0 * tan(Zangle) - x0);
             }
         }
-        if (WritePath)
+        if(WritePath)
         {
             fclose(fp);
         }

@@ -37,13 +37,13 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
     //		aph.a[i]=100;
     DEBUG_TRACEPOINT("Setting flag switches");
     flags.switches[0] = 0;
-    for (int i = 1; i < 24; i++)
+    for(int i = 1; i < 24; i++)
     {
         flags.switches[i] = 1;
     }
 
     DEBUG_TRACEPOINT("initializing input array");
-    for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+    for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
     {
         input[zindex].doy    = atm->TimeDayOfYear;
         input[zindex].year   = 0; /* without effect */
@@ -53,9 +53,9 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         input[zindex].lst    = atm->TimeLocalSolarTime;
 
         input[zindex].sec =
-            (int) (3600.0 * (atm->TimeLocalSolarTime - atm->SiteLong / 15.0));
+            (int)(3600.0 * (atm->TimeLocalSolarTime - atm->SiteLong / 15.0));
 
-        if (input[zindex].sec < 0)
+        if(input[zindex].sec < 0)
         {
             input[zindex].sec += 3600 * 24;
         }
@@ -103,11 +103,11 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
                atm->vprof_pressure.val[zindex]);
 
         DEBUG_TRACEPOINT("adjust temperature and pressure");
-        if (atm->SiteTPauto == 0)
+        if(atm->SiteTPauto == 0)
         {
             // search for altitude to match site temperature
             double h = atm->SiteAlt;
-            for (int k = 0; k < 10; k++)
+            for(int k = 0; k < 10; k++)
             {
                 input[zindex].alt = 0.001 * h;
                 gtd7(&input[zindex], &flags, &output[zindex]);
@@ -143,7 +143,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
     }
 
     TotPart0 = (double *) malloc(
-        sizeof(double) * ATM_VPROF_NBSTEP); // total number of particles per cm3
+                   sizeof(double) * ATM_VPROF_NBSTEP); // total number of particles per cm3
 
     double TotPart, TotPart1, TotPart2;
     TotPart  = 0.0;
@@ -151,7 +151,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
     TotPart2 = 0.0;
 
     DEBUG_TRACEPOINT("compute stdatm profile");
-    for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+    for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
     {
         double h          = ATM_VPROF_STEPSIZE * zindex + deltah;
         input[zindex].alt = 0.001 * h;
@@ -196,7 +196,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
 
         atm->vprof_dens_species[speciesCH4].val[zindex] =
             TotPart0[zindex] * 2e-6;
-        if (h < 45000.0)
+        if(h < 45000.0)
         {
             atm->vprof_dens_species[speciesCH4].val[zindex] *=
                 1.0 - h / 45000.0;
@@ -223,7 +223,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
             exp(-0.5 * pow(((h - 25000.0) / 4250.0), 2.0)); // [m-3]
         atm->vprof_dens_species[speciesO3].val[zindex] *= 1.0e-6;
 
-        if (h < 70000)
+        if(h < 70000)
         {
             atm->vprof_dens_species[speciesCO2].val[zindex] =
                 atm->CO2_ppm * 1e-6 * TotPart0[zindex];
@@ -246,7 +246,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
 
         atm->vprof_temperature.val[zindex] = output[zindex].t[1];
 
-        if (h > atm->SiteAlt)
+        if(h > atm->SiteAlt)
         {
             // cumulative number of particles per cm2
             TotPart += TotPart0[zindex];
@@ -276,7 +276,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
 
     DEBUG_TRACEPOINT("compute H2O density");
 
-    if (atm->SiteH2OMethod == 1)
+    if(atm->SiteH2OMethod == 1)
     {
         // TPW, SH -> adjust RH to meet total precipitable water
 
@@ -285,7 +285,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         printf("TOTAL H2O particles: %g part.cm^-2\n", X);
 
         atm->alpha1H2O = (X - TotPart1) / TotPart2;
-        if (atm->alpha1H2O < 0.0)
+        if(atm->alpha1H2O < 0.0)
         {
             printf(
                 "ERROR: total precititable water value is too low, and not "
@@ -294,7 +294,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         }
         printf("alpha1H2O = %g\n", atm->alpha1H2O);
 
-        for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+        for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
         {
             double h = ATM_VPROF_STEPSIZE * zindex;
             atm->vprof_dens_species[speciesH2O].val[zindex] +=
@@ -304,22 +304,22 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         }
     }
 
-    if (atm->SiteH2OMethod == 2)
+    if(atm->SiteH2OMethod == 2)
     {
         // RH, SH -> compute total precipitable water
 
-        long   i0    = (long) (atm->SiteAlt / ATM_VPROF_STEPSIZE);
+        long   i0    = (long)(atm->SiteAlt / ATM_VPROF_STEPSIZE);
         double ifrac = atm->SiteAlt / ATM_VPROF_STEPSIZE - i0;
 
         H2OSatTempSite = AtmosphereModel_H2O_Saturation(
-            (1.0 - ifrac) * atm->vprof_temperature.val[i0] +
-            ifrac * atm->vprof_temperature.val[i0 + 1]); // [Pa]
+                             (1.0 - ifrac) * atm->vprof_temperature.val[i0] +
+                             ifrac * atm->vprof_temperature.val[i0 + 1]); // [Pa]
 
         densH20_site = (atm->SiteRH / 100.0) * LoschmidtConstant * 1e-6 *
                        H2OSatTempSite / 101325.0; // cm3
         //	RH[i] = (densH2O[i]*1e6/LoschmidtConstant)*101325.0/AtmosphericTurbulence_H2O_Saturation(temperature[i]);
         TotPart2 = 0.0;
-        for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+        for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
         {
             double h = ATM_VPROF_STEPSIZE * zindex;
             //            densH2O[i] /= 1000.0;
@@ -327,7 +327,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
                 densH20_site * exp(-(h - atm->SiteAlt) / atm->SitePWSH) *
                 (TotPart0[zindex] / TotPart0[i0]) *
                 exp(-3.0 * pow(h / 100000.0, 4.0));
-            if (h > atm->SiteAlt)
+            if(h > atm->SiteAlt)
             {
                 TotPart2 += 100.0 * densH20_site *
                             exp(-(h - atm->SiteAlt) / atm->SitePWSH) *
@@ -339,7 +339,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
                (TotPart1 + TotPart2) * 10.0 * 18.0 / 6.022e23);
     }
 
-    if (atm->SiteH2OMethod == 3)
+    if(atm->SiteH2OMethod == 3)
     {
         // RH, TPW -> compute SH
 
@@ -347,20 +347,20 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         double X = (atm->SiteTPW * 0.1) * 6.0221413e23 / 18.0;
         printf("TOTAL H2O particles: %g part.cm^-2\n", X);
 
-        long   i0    = (long) (atm->SiteAlt / ATM_VPROF_STEPSIZE);
+        long   i0    = (long)(atm->SiteAlt / ATM_VPROF_STEPSIZE);
         double ifrac = atm->SiteAlt / ATM_VPROF_STEPSIZE - i0;
 
         H2OSatTempSite = AtmosphereModel_H2O_Saturation(
-            (1.0 - ifrac) * atm->vprof_temperature.val[i0] +
-            ifrac * atm->vprof_temperature.val[i0 + 1]); // [Pa]
+                             (1.0 - ifrac) * atm->vprof_temperature.val[i0] +
+                             ifrac * atm->vprof_temperature.val[i0 + 1]); // [Pa]
         densH20_site = (atm->SiteRH / 100.0) * LoschmidtConstant * 1e-6 *
                        H2OSatTempSite / 101325.0; // cm3
 
         double tpw = 0.0;
-        for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+        for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
         {
             double h = ATM_VPROF_STEPSIZE * zindex;
-            if (h > atm->SiteAlt)
+            if(h > atm->SiteAlt)
             {
                 // particules per cm2
                 tpw += atm->vprof_dens_species[speciesH2O].val[zindex] * 1000.0;
@@ -380,13 +380,13 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         {
             float deltapwsh = 100.0;
             int   dir       = 1;
-            for (int iter = 0; iter < 15; iter++)
+            for(int iter = 0; iter < 15; iter++)
             {
                 TotPart2 = 0.0;
-                for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+                for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
                 {
                     double h = ATM_VPROF_STEPSIZE * zindex;
-                    if (h > atm->SiteAlt)
+                    if(h > atm->SiteAlt)
                     {
                         TotPart2 += 1000.0 * densH20_site *
                                     exp(-(h - atm->SiteAlt) / pwsh) *
@@ -402,7 +402,7 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
                 printf("  %f  %f %f  %f\n", pwsh, tpw, tpw0, deltapwsh);
 
                 int odir = dir;
-                if (tpw > tpw0) // too much water
+                if(tpw > tpw0)  // too much water
                 {
                     pwsh -= deltapwsh;
                     dir = -1;
@@ -413,14 +413,14 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
                     dir = 1;
                 }
 
-                if (odir != dir)
+                if(odir != dir)
                 {
                     deltapwsh *= 0.5;
                 }
             }
         }
 
-        for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+        for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
         {
             double h = ATM_VPROF_STEPSIZE * zindex;
             //          densH2O[i] /= 1000.0;
@@ -436,10 +436,10 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
     {
         // measuring TPW
         double tpw = 0.0;
-        for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+        for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
         {
             double h = ATM_VPROF_STEPSIZE * zindex;
-            if (h > atm->SiteAlt)
+            if(h > atm->SiteAlt)
             {
                 tpw += atm->vprof_dens_species[speciesH2O].val[zindex] *
                        1000.0; // particules per cm2
@@ -453,16 +453,16 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
     }
 
     {
-        long   i0    = (long) (atm->SiteAlt / ATM_VPROF_STEPSIZE);
+        long   i0    = (long)(atm->SiteAlt / ATM_VPROF_STEPSIZE);
         double ifrac = atm->SiteAlt / ATM_VPROF_STEPSIZE - i0;
 
         H2OSatTempSite = AtmosphereModel_H2O_Saturation(
-            (1.0 - ifrac) * atm->vprof_temperature.val[i0] +
-            ifrac * atm->vprof_temperature.val[i0 + 1]);
+                             (1.0 - ifrac) * atm->vprof_temperature.val[i0] +
+                             ifrac * atm->vprof_temperature.val[i0 + 1]);
 
         printf("    RH  :   %f %%\n",
                atm->vprof_dens_species[speciesH2O].val[i0] / LoschmidtConstant *
-                   1e6 / H2OSatTempSite * 101325.0 * 100.0);
+               1e6 / H2OSatTempSite * 101325.0 * 100.0);
     }
 
     //fp = fopen(fname, "w");
@@ -471,12 +471,12 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
     TotPart  = 0.0;
     TotPart1 = 0.0;
     TotPart2 = 0.0;
-    for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+    for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
     {
         double h = ATM_VPROF_STEPSIZE * zindex;
         //	gtd7(&input[i], &flags, &output[i]);
 
-        if (h > atm->SiteAlt)
+        if(h > atm->SiteAlt)
         {
             TotPart1 +=
                 atm->vprof_dens_species[speciesH2O].val[zindex] * 1000.0;
@@ -536,8 +536,8 @@ int AtmosphereModel_build_stdAtmModel(ATMOSPHERE_MODEL *atm,
         atm->vprof_density.val[zindex]     = output[zindex].d[5];
         atm->vprof_temperature.val[zindex] = output[zindex].t[1];
         atm->vprof_pressure.val[zindex]    = atm->vprof_denstot.val[zindex] *
-                                          1.0e6 / LoschmidtConstant *
-                                          (output[zindex].t[1] / 273.15);
+                                             1.0e6 / LoschmidtConstant *
+                                             (output[zindex].t[1] / 273.15);
 
         atm->vprof_RH.val[zindex] =
             (atm->vprof_dens_species[speciesH2O].val[zindex] * 1e6 /

@@ -29,29 +29,29 @@ AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *densarray)
 
     double LLcumul = 0.0;
 
-    for (int specindex = 0; specindex < atmNBspecies; specindex++)
+    for(int specindex = 0; specindex < atmNBspecies; specindex++)
     {
         double abscoeff = 0.0;
         double n;
 
-        if (speciesRIA.RIA_species[specindex].init == 1)
+        if(speciesRIA.RIA_species[specindex].init == 1)
         {
             long lli = lliprecomp[specindex];
-            if (lli < 0)
+            if(lli < 0)
             {
-                lli = (long) (speciesRIA.RIA_species[specindex].NBpt / 2);
+                lli = (long)(speciesRIA.RIA_species[specindex].NBpt / 2);
             }
 
             int llistep = 100;
             int llidir  = 1; // direction : -1=neg, 1=pos
-            while (llistep != 1)
+            while(llistep != 1)
             {
-                llistep = (long) (0.3 * llistep);
-                if (llistep == 0)
+                llistep = (long)(0.3 * llistep);
+                if(llistep == 0)
                 {
                     llistep = 1;
                 }
-                while (
+                while(
                     (speciesRIA.RIA_species[specindex].lambda[lli] * llidir <
                      lambda * llidir) &&
                     (lli < speciesRIA.RIA_species[specindex].NBpt - llistep) &&
@@ -74,11 +74,11 @@ AirMixture_ria(ATM_SPECIES_RIADATA speciesRIA, double lambda, double *densarray)
         else
         {
             n = OpticsMaterials_n(
-                OpticsMaterials_code(speciesRIA.RIA_species[specindex].name),
-                lambda);
+                    OpticsMaterials_code(speciesRIA.RIA_species[specindex].name),
+                    lambda);
             //printf("    %20s  %.9f\n", speciesRIA.RIA_species[specindex].name, n);
 
-            if (n < 0.0) // not available
+            if(n < 0.0)  // not available
             {
                 n = 1.0; // default
             }

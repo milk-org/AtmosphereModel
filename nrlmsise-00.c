@@ -76,18 +76,26 @@ static double apdf, apt[4];
 void tselec(struct nrlmsise_flags *flags)
 {
     int i;
-    for (i = 0; i < 24; i++)
+    for(i = 0; i < 24; i++)
     {
-        if (i != 9)
+        if(i != 9)
         {
-            if (flags->switches[i] == 1)
+            if(flags->switches[i] == 1)
+            {
                 flags->sw[i] = 1;
+            }
             else
+            {
                 flags->sw[i] = 0;
-            if (flags->switches[i] > 0)
+            }
+            if(flags->switches[i] > 0)
+            {
                 flags->swc[i] = 1;
+            }
             else
+            {
                 flags->swc[i] = 0;
+            }
         }
         else
         {
@@ -117,18 +125,22 @@ void glatf(double lat, double *gv, double *reff)
 double ccor(double alt, double r, double h1, double zh)
 {
     /*        CHEMISTRY/DISSOCIATION CORRECTION FOR MSIS MODELS
- *         ALT - altitude
- *         R - target ratio
- *         H1 - transition scale length
- *         ZH - altitude of 1/2 R
- */
+    *         ALT - altitude
+    *         R - target ratio
+    *         H1 - transition scale length
+    *         ZH - altitude of 1/2 R
+    */
     double e;
     double ex;
     e = (alt - zh) / h1;
-    if (e > 70)
+    if(e > 70)
+    {
         return exp(0);
-    if (e < -70)
+    }
+    if(e < -70)
+    {
         return exp(r);
+    }
     ex = exp(e);
     e  = r / (1.0 + ex);
     return exp(e);
@@ -141,21 +153,25 @@ double ccor(double alt, double r, double h1, double zh)
 double ccor2(double alt, double r, double h1, double zh, double h2)
 {
     /*        CHEMISTRY/DISSOCIATION CORRECTION FOR MSIS MODELS
- *         ALT - altitude
- *         R - target ratio
- *         H1 - transition scale length
- *         ZH - altitude of 1/2 R
- *         H2 - transition scale length #2 ?
- */
+    *         ALT - altitude
+    *         R - target ratio
+    *         H1 - transition scale length
+    *         ZH - altitude of 1/2 R
+    *         H2 - transition scale length #2 ?
+    */
     double e1, e2;
     double ex1, ex2;
     double ccor2v;
     e1 = (alt - zh) / h1;
     e2 = (alt - zh) / h2;
-    if ((e1 > 70) || (e2 > 70))
+    if((e1 > 70) || (e2 > 70))
+    {
         return exp(0);
-    if ((e1 < -70) && (e2 < -70))
+    }
+    if((e1 < -70) && (e2 < -70))
+    {
         return exp(r);
+    }
     ex1    = exp(e1);
     ex2    = exp(e2);
     ccor2v = r / (1.0 + 0.5 * (ex1 + ex2));
@@ -182,32 +198,42 @@ double scalh(double alt, double xm, double temp)
 double dnet(double dd, double dm, double zhm, double xmm, double xm)
 {
     /*       TURBOPAUSE CORRECTION FOR MSIS MODELS
- *        Root mean density
- *         DD - diffusive density
- *         DM - full mixed density
- *         ZHM - transition scale length
- *         XMM - full mixed molecular weight
- *         XM  - species molecular weight
- *         DNET - combined density
- */
+    *        Root mean density
+    *         DD - diffusive density
+    *         DM - full mixed density
+    *         ZHM - transition scale length
+    *         XMM - full mixed molecular weight
+    *         XM  - species molecular weight
+    *         DNET - combined density
+    */
     double a;
     double ylog;
     a = zhm / (xmm - xm);
-    if (!((dm > 0) && (dd > 0)))
+    if(!((dm > 0) && (dd > 0)))
     {
         printf("dnet log error %e %e %e\n", dm, dd, xm);
-        if ((dd == 0) && (dm == 0))
+        if((dd == 0) && (dm == 0))
+        {
             dd = 1;
-        if (dm == 0)
+        }
+        if(dm == 0)
+        {
             return dd;
-        if (dd == 0)
+        }
+        if(dd == 0)
+        {
             return dm;
+        }
     }
     ylog = a * log(dm / dd);
-    if (ylog < -10)
+    if(ylog < -10)
+    {
         return dd;
-    if (ylog > 10)
+    }
+    if(ylog > 10)
+    {
         return dm;
+    }
     a = dd * pow((1.0 + exp(ylog)), (1.0 / a));
     return a;
 }
@@ -219,25 +245,29 @@ double dnet(double dd, double dm, double zhm, double xmm, double xm)
 void splini(double *xa, double *ya, double *y2a, int n, double x, double *y)
 {
     /*      INTEGRATE CUBIC SPLINE FUNCTION FROM XA(1) TO X
- *       XA,YA: ARRAYS OF TABULATED FUNCTION IN ASCENDING ORDER BY X
- *       Y2A: ARRAY OF SECOND DERIVATIVES
- *       N: SIZE OF ARRAYS XA,YA,Y2A
- *       X: ABSCISSA ENDPOINT FOR INTEGRATION
- *       Y: OUTPUT VALUE
- */
+    *       XA,YA: ARRAYS OF TABULATED FUNCTION IN ASCENDING ORDER BY X
+    *       Y2A: ARRAY OF SECOND DERIVATIVES
+    *       N: SIZE OF ARRAYS XA,YA,Y2A
+    *       X: ABSCISSA ENDPOINT FOR INTEGRATION
+    *       Y: OUTPUT VALUE
+    */
     double yi  = 0;
     int    klo = 0;
     int    khi = 1;
     double xx, h, a, b, a2, b2;
-    while ((x > xa[klo]) && (khi < n))
+    while((x > xa[klo]) && (khi < n))
     {
         xx = x;
-        if (khi < (n - 1))
+        if(khi < (n - 1))
         {
-            if (x < xa[khi])
+            if(x < xa[khi])
+            {
                 xx = x;
+            }
             else
+            {
                 xx = xa[khi];
+            }
         }
         h  = xa[khi] - xa[klo];
         a  = (xa[khi] - xx) / h;
@@ -247,7 +277,7 @@ void splini(double *xa, double *ya, double *y2a, int n, double x, double *y)
         yi += ((1.0 - a2) * ya[klo] / 2.0 + b2 * ya[khi] / 2.0 +
                ((-(1.0 + a2 * a2) / 4.0 + a2 / 2.0) * y2a[klo] +
                 (b2 * b2 / 4.0 - b2 / 2.0) * y2a[khi]) *
-                   h * h / 6.0) *
+               h * h / 6.0) *
               h;
         klo++;
         khi++;
@@ -262,29 +292,35 @@ void splini(double *xa, double *ya, double *y2a, int n, double x, double *y)
 void splint(double *xa, double *ya, double *y2a, int n, double x, double *y)
 {
     /*      CALCULATE CUBIC SPLINE INTERP VALUE
- *       ADAPTED FROM NUMERICAL RECIPES BY PRESS ET AL.
- *       XA,YA: ARRAYS OF TABULATED FUNCTION IN ASCENDING ORDER BY X
- *       Y2A: ARRAY OF SECOND DERIVATIVES
- *       N: SIZE OF ARRAYS XA,YA,Y2A
- *       X: ABSCISSA FOR INTERPOLATION
- *       Y: OUTPUT VALUE
- */
+    *       ADAPTED FROM NUMERICAL RECIPES BY PRESS ET AL.
+    *       XA,YA: ARRAYS OF TABULATED FUNCTION IN ASCENDING ORDER BY X
+    *       Y2A: ARRAY OF SECOND DERIVATIVES
+    *       N: SIZE OF ARRAYS XA,YA,Y2A
+    *       X: ABSCISSA FOR INTERPOLATION
+    *       Y: OUTPUT VALUE
+    */
     int    klo = 0;
     int    khi = n - 1;
     int    k;
     double h;
     double a, b, yi;
-    while ((khi - klo) > 1)
+    while((khi - klo) > 1)
     {
         k = (khi + klo) / 2;
-        if (xa[k] > x)
+        if(xa[k] > x)
+        {
             khi = k;
+        }
         else
+        {
             klo = k;
+        }
     }
     h = xa[khi] - xa[klo];
-    if (h == 0.0)
+    if(h == 0.0)
+    {
         printf("bad XA input to splint");
+    }
     a = (xa[khi] - x) / h;
     b = (x - xa[klo]) / h;
     yi =
@@ -300,23 +336,23 @@ void splint(double *xa, double *ya, double *y2a, int n, double x, double *y)
 void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
 {
     /*       CALCULATE 2ND DERIVATIVES OF CUBIC SPLINE INTERP FUNCTION
- *       ADAPTED FROM NUMERICAL RECIPES BY PRESS ET AL
- *       X,Y: ARRAYS OF TABULATED FUNCTION IN ASCENDING ORDER BY X
- *       N: SIZE OF ARRAYS X,Y
- *       YP1,YPN: SPECIFIED DERIVATIVES AT X[0] AND X[N-1]; VALUES
- *                >= 1E30 SIGNAL SIGNAL SECOND DERIVATIVE ZERO
- *       Y2: OUTPUT ARRAY OF SECOND DERIVATIVES
- */
+    *       ADAPTED FROM NUMERICAL RECIPES BY PRESS ET AL
+    *       X,Y: ARRAYS OF TABULATED FUNCTION IN ASCENDING ORDER BY X
+    *       N: SIZE OF ARRAYS X,Y
+    *       YP1,YPN: SPECIFIED DERIVATIVES AT X[0] AND X[N-1]; VALUES
+    *                >= 1E30 SIGNAL SIGNAL SECOND DERIVATIVE ZERO
+    *       Y2: OUTPUT ARRAY OF SECOND DERIVATIVES
+    */
     double *u;
     double  sig, p, qn, un;
     int     i, k;
     u = malloc(sizeof(double) * (unsigned int) n);
-    if (u == NULL)
+    if(u == NULL)
     {
         printf("Out Of Memory in spline - ERROR");
         return;
     }
-    if (yp1 > 0.99E30)
+    if(yp1 > 0.99E30)
     {
         y2[0] = 0;
         u[0]  = 0;
@@ -326,19 +362,19 @@ void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
         y2[0] = -0.5;
         u[0]  = (3.0 / (x[1] - x[0])) * ((y[1] - y[0]) / (x[1] - x[0]) - yp1);
     }
-    for (i = 1; i < (n - 1); i++)
+    for(i = 1; i < (n - 1); i++)
     {
         sig   = (x[i] - x[i - 1]) / (x[i + 1] - x[i - 1]);
         p     = sig * y2[i - 1] + 2.0;
         y2[i] = (sig - 1.0) / p;
         u[i]  = (6.0 *
-                    ((y[i + 1] - y[i]) / (x[i + 1] - x[i]) -
-                     (y[i] - y[i - 1]) / (x[i] - x[i - 1])) /
-                    (x[i + 1] - x[i - 1]) -
-                sig * u[i - 1]) /
-               p;
+                 ((y[i + 1] - y[i]) / (x[i + 1] - x[i]) -
+                  (y[i] - y[i - 1]) / (x[i] - x[i - 1])) /
+                 (x[i + 1] - x[i - 1]) -
+                 sig * u[i - 1]) /
+                p;
     }
-    if (ypn > 0.99E30)
+    if(ypn > 0.99E30)
     {
         qn = 0;
         un = 0;
@@ -350,8 +386,10 @@ void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
              (ypn - (y[n - 1] - y[n - 2]) / (x[n - 1] - x[n - 2]));
     }
     y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
-    for (k = n - 2; k >= 0; k--)
+    for(k = n - 2; k >= 0; k--)
+    {
         y2[k] = y2[k] * y2[k + 1] + u[k];
+    }
 
     free(u);
 }
@@ -389,19 +427,27 @@ double densm(double  alt,
     int    mn;
     int    k;
     densm_tmp = d0;
-    if (alt > zn2[0])
+    if(alt > zn2[0])
     {
-        if (xm == 0.0)
+        if(xm == 0.0)
+        {
             return *tz;
+        }
         else
+        {
             return d0;
+        }
     }
 
     /* STRATOSPHERE/MESOSPHERE TEMPERATURE */
-    if (alt > zn2[mn2 - 1])
+    if(alt > zn2[mn2 - 1])
+    {
         z = alt;
+    }
     else
+    {
         z = zn2[mn2 - 1];
+    }
     mn    = mn2;
     z1    = zn2[0];
     z2    = zn2[mn - 1];
@@ -411,7 +457,7 @@ double densm(double  alt,
     zgdif = zeta(z2, z1);
 
     /* set up spline nodes */
-    for (k = 0; k < mn; k++)
+    for(k = 0; k < mn; k++)
     {
         xs[k] = zeta(zn2[k], z1) / zgdif;
         ys[k] = 1.0 / tn2[k];
@@ -426,7 +472,7 @@ double densm(double  alt,
 
     /* temperature at altitude */
     *tz = 1.0 / y;
-    if (xm != 0.0)
+    if(xm != 0.0)
     {
         /* calaculate stratosphere / mesospehere density */
         glb  = gsurf / (pow((1.0 + z1 / re), 2.0));
@@ -435,19 +481,25 @@ double densm(double  alt,
         /* Integrate temperature profile */
         splini(xs, ys, y2out, mn, x, &yi);
         expl = gamm * yi;
-        if (expl > 50.0)
+        if(expl > 50.0)
+        {
             expl = 50.0;
+        }
 
         /* Density at altitude */
         densm_tmp = densm_tmp * (t1 / *tz) * exp(-expl);
     }
 
-    if (alt > zn3[0])
+    if(alt > zn3[0])
     {
-        if (xm == 0.0)
+        if(xm == 0.0)
+        {
             return *tz;
+        }
         else
+        {
             return densm_tmp;
+        }
     }
 
     /* troposhere / stratosphere temperature */
@@ -461,7 +513,7 @@ double densm(double  alt,
     zgdif = zeta(z2, z1);
 
     /* set up spline nodes */
-    for (k = 0; k < mn; k++)
+    for(k = 0; k < mn; k++)
     {
         xs[k] = zeta(zn3[k], z1) / zgdif;
         ys[k] = 1.0 / tn3[k];
@@ -476,7 +528,7 @@ double densm(double  alt,
 
     /* temperature at altitude */
     *tz = 1.0 / y;
-    if (xm != 0.0)
+    if(xm != 0.0)
     {
         /* calaculate tropospheric / stratosphere density */
         glb  = gsurf / (pow((1.0 + z1 / re), 2.0));
@@ -485,16 +537,22 @@ double densm(double  alt,
         /* Integrate temperature profile */
         splini(xs, ys, y2out, mn, x, &yi);
         expl = gamm * yi;
-        if (expl > 50.0)
+        if(expl > 50.0)
+        {
             expl = 50.0;
+        }
 
         /* Density at altitude */
         densm_tmp = densm_tmp * (t1 / *tz) * exp(-expl);
     }
-    if (xm == 0.0)
+    if(xm == 0.0)
+    {
         return *tz;
+    }
     else
+    {
         return densm_tmp;
+    }
 }
 
 /* ------------------------------------------------------------------- */
@@ -516,8 +574,8 @@ double densu(double  alt,
              double *tgn1)
 {
     /*      Calculate Temperature and Density Profiles for MSIS models
- *      New lower thermo polynomial
- */
+    *      New lower thermo polynomial
+    */
     double yd2, yd1, x = 0, y;
     double rgas       = 831.4;
     double densu_temp = 1.0;
@@ -533,10 +591,14 @@ double densu(double  alt,
     double xs[5], ys[5], y2out[5];
     /* joining altitudes of Bates and spline */
     za = zn1[0];
-    if (alt > za)
+    if(alt > za)
+    {
         z = alt;
+    }
     else
+    {
         z = za;
+    }
 
     /* geopotential altitude difference from ZLB */
     zg2 = zeta(z, zlb);
@@ -547,17 +609,21 @@ double densu(double  alt,
     *tz        = tt;
     densu_temp = *tz;
 
-    if (alt < za)
+    if(alt < za)
     {
         /* calculate temperature below ZA
-		 * temperature gradient at ZA from Bates profile */
+         * temperature gradient at ZA from Bates profile */
         dta     = (tinf - ta) * s2 * pow(((re + zlb) / (re + za)), 2.0);
         tgn1[0] = dta;
         tn1[0]  = ta;
-        if (alt > zn1[mn1 - 1])
+        if(alt > zn1[mn1 - 1])
+        {
             z = alt;
+        }
         else
+        {
             z = zn1[mn1 - 1];
+        }
         mn = mn1;
         z1 = zn1[0];
         z2 = zn1[mn - 1];
@@ -567,7 +633,7 @@ double densu(double  alt,
         zg    = zeta(z, z1);
         zgdif = zeta(z2, z1);
         /* set up spline nodes */
-        for (k = 0; k < mn; k++)
+        for(k = 0; k < mn; k++)
         {
             xs[k] = zeta(zn1[k], z1) / zgdif;
             ys[k] = 1.0 / tn1[k];
@@ -583,23 +649,31 @@ double densu(double  alt,
         *tz        = 1.0 / y;
         densu_temp = *tz;
     }
-    if (xm == 0)
+    if(xm == 0)
+    {
         return densu_temp;
+    }
 
     /* calculate density above za */
     glb   = gsurf / pow((1.0 + zlb / re), 2.0);
     gamma = xm * glb / (s2 * rgas * tinf);
     expl  = exp(-s2 * gamma * zg2);
-    if (expl > 50.0)
+    if(expl > 50.0)
+    {
         expl = 50.0;
-    if (tt <= 0)
+    }
+    if(tt <= 0)
+    {
         expl = 50.0;
+    }
 
     /* density at altitude */
     densa      = dlb * pow((tlb / tt), ((1.0 + alpha + gamma))) * expl;
     densu_temp = densa;
-    if (alt >= za)
+    if(alt >= za)
+    {
         return densu_temp;
+    }
 
     /* calculate density below za */
     glb  = gsurf / pow((1.0 + z1 / re), 2.0);
@@ -608,10 +682,14 @@ double densu(double  alt,
     /* integrate spline temperatures */
     splini(xs, ys, y2out, mn, x, &yi);
     expl = gamm * yi;
-    if (expl > 50.0)
+    if(expl > 50.0)
+    {
         expl = 50.0;
-    if (*tz <= 0)
+    }
+    if(*tz <= 0)
+    {
         expl = 50.0;
+    }
 
     /* density at altitude */
     densu_temp = densu_temp * pow((t1 / *tz), (1.0 + alpha)) * exp(-expl);
@@ -629,7 +707,7 @@ __inline_double g0(double a, double *p)
     return (a - 4.0 +
             (p[25] - 1.0) * (a - 4.0 +
                              (exp(-sqrt(p[24] * p[24]) * (a - 4.0)) - 1.0) /
-                                 sqrt(p[24] * p[24])));
+                             sqrt(p[24] * p[24])));
 }
 
 /*    Eq. A24c */
@@ -645,7 +723,7 @@ __inline_double sg0(double ex, double *p, double *ap)
             (g0(ap[2], p) * ex + g0(ap[3], p) * ex * ex +
              g0(ap[4], p) * pow(ex, 3.0) +
              (g0(ap[5], p) * pow(ex, 4.0) + g0(ap[6], p) * pow(ex, 12.0)) *
-                 (1.0 - pow(ex, 8.0)) / (1.0 - ex))) /
+             (1.0 - pow(ex, 8.0)) / (1.0 - ex))) /
            sumex(ex);
 }
 
@@ -653,7 +731,7 @@ double
 globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
 {
     /*       CALCULATE G(L) FUNCTION
- *       Upper Thermosphere Parameters */
+    *       Upper Thermosphere Parameters */
     double           t[15];
     int              i, j;
     double           apd;
@@ -670,8 +748,10 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     struct ap_array *ap;
 
     tloc = input->lst;
-    for (j = 0; j < 14; j++)
+    for(j = 0; j < 14; j++)
+    {
         t[j] = 0;
+    }
 
     /* calculate legendre polynomials */
     c  = sin(input->g_lat * dgtr);
@@ -706,7 +786,7 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     plg[3][5] = (9.0 * c * plg[3][4] - 7. * plg[3][3]) / 2.0;
     plg[3][6] = (11.0 * c * plg[3][5] - 8. * plg[3][4]) / 3.0;
 
-    if (!(((flags->sw[7] == 0) && (flags->sw[8] == 0)) && (flags->sw[14] == 0)))
+    if(!(((flags->sw[7] == 0) && (flags->sw[8] == 0)) && (flags->sw[14] == 0)))
     {
         stloc  = sin(hr * tloc);
         ctloc  = cos(hr * tloc);
@@ -746,7 +826,7 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     t[5] = p[37] * plg[0][1] * cd39;
 
     /* DIURNAL */
-    if (flags->sw[7])
+    if(flags->sw[7])
     {
         double t71, t72;
         t71 = (p[11] * plg[1][2]) * cd14 * flags->swc[5];
@@ -754,13 +834,13 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
         t[6] =
             f2 *
             ((p[3] * plg[1][1] + p[4] * plg[1][3] + p[27] * plg[1][5] + t71) *
-                 ctloc +
+             ctloc +
              (p[6] * plg[1][1] + p[7] * plg[1][3] + p[28] * plg[1][5] + t72) *
-                 stloc);
+             stloc);
     }
 
     /* SEMIDIURNAL */
-    if (flags->sw[8])
+    if(flags->sw[8])
     {
         double t81, t82;
         t81  = (p[23] * plg[2][3] + p[35] * plg[2][5]) * cd14 * flags->swc[5];
@@ -770,45 +850,49 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     }
 
     /* TERDIURNAL */
-    if (flags->sw[14])
+    if(flags->sw[14])
     {
         t[13] =
             f2 * ((p[39] * plg[3][3] + (p[93] * plg[3][4] + p[46] * plg[3][6]) *
-                                           cd14 * flags->swc[5]) *
-                      s3tloc +
+                   cd14 * flags->swc[5]) *
+                  s3tloc +
                   (p[40] * plg[3][3] + (p[94] * plg[3][4] + p[48] * plg[3][6]) *
-                                           cd14 * flags->swc[5]) *
-                      c3tloc);
+                   cd14 * flags->swc[5]) *
+                  c3tloc);
     }
 
     /* magnetic activity based on daily ap */
-    if (flags->sw[9] == -1)
+    if(flags->sw[9] == -1)
     {
         ap = input->ap_a;
-        if (p[51] != 0)
+        if(p[51] != 0)
         {
             double exp1;
             exp1 = exp(
-                -10800.0 * sqrt(p[51] * p[51]) /
-                (1.0 + p[138] * (45.0 - sqrt(input->g_lat * input->g_lat))));
-            if (exp1 > 0.99999)
+                       -10800.0 * sqrt(p[51] * p[51]) /
+                       (1.0 + p[138] * (45.0 - sqrt(input->g_lat * input->g_lat))));
+            if(exp1 > 0.99999)
+            {
                 exp1 = 0.99999;
-            if (p[24] < 1.0E-4)
+            }
+            if(p[24] < 1.0E-4)
+            {
                 p[24] = 1.0E-4;
+            }
             apt[0] = sg0(exp1, p, ap->a);
             /* apt[1]=sg2(exp1,p,ap->a);
-			   apt[2]=sg0(exp2,p,ap->a);
-			   apt[3]=sg2(exp2,p,ap->a);
-			*/
-            if (flags->sw[9])
+               apt[2]=sg0(exp2,p,ap->a);
+               apt[3]=sg2(exp2,p,ap->a);
+            */
+            if(flags->sw[9])
             {
                 t[8] = apt[0] * (p[50] + p[96] * plg[0][2] + p[54] * plg[0][4] +
                                  (p[125] * plg[0][1] + p[126] * plg[0][3] +
                                   p[127] * plg[0][5]) *
-                                     cd14 * flags->swc[5] +
+                                 cd14 * flags->swc[5] +
                                  (p[128] * plg[1][1] + p[129] * plg[1][3] +
                                   p[130] * plg[1][5]) *
-                                     flags->swc[7] * cos(hr * (tloc - p[131])));
+                                 flags->swc[7] * cos(hr * (tloc - p[131])));
             }
         }
     }
@@ -818,47 +902,49 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
         apd = input->ap - 4.0;
         p44 = p[43];
         p45 = p[44];
-        if (p44 < 0)
+        if(p44 < 0)
+        {
             p44 = 1.0E-5;
+        }
         apdf = apd + (p45 - 1.0) * (apd + (exp(-p44 * apd) - 1.0) / p44);
-        if (flags->sw[9])
+        if(flags->sw[9])
         {
             t[8] = apdf * (p[32] + p[45] * plg[0][2] + p[34] * plg[0][4] +
                            (p[100] * plg[0][1] + p[101] * plg[0][3] +
                             p[102] * plg[0][5]) *
-                               cd14 * flags->swc[5] +
+                           cd14 * flags->swc[5] +
                            (p[121] * plg[1][1] + p[122] * plg[1][3] +
                             p[123] * plg[1][5]) *
-                               flags->swc[7] * cos(hr * (tloc - p[124])));
+                           flags->swc[7] * cos(hr * (tloc - p[124])));
         }
     }
 
-    if ((flags->sw[10]) && (input->g_long > -1000.0))
+    if((flags->sw[10]) && (input->g_long > -1000.0))
     {
 
         /* longitudinal */
-        if (flags->sw[11])
+        if(flags->sw[11])
         {
             t[10] =
                 (1.0 + p[80] * dfa * flags->swc[1]) *
                 ((p[64] * plg[1][2] + p[65] * plg[1][4] + p[66] * plg[1][6] +
                   p[103] * plg[1][1] + p[104] * plg[1][3] + p[105] * plg[1][5] +
                   flags->swc[5] *
-                      (p[109] * plg[1][1] + p[110] * plg[1][3] +
-                       p[111] * plg[1][5]) *
-                      cd14) *
-                     cos(dgtr * input->g_long) +
+                  (p[109] * plg[1][1] + p[110] * plg[1][3] +
+                   p[111] * plg[1][5]) *
+                  cd14) *
+                 cos(dgtr * input->g_long) +
                  (p[90] * plg[1][2] + p[91] * plg[1][4] + p[92] * plg[1][6] +
                   p[106] * plg[1][1] + p[107] * plg[1][3] + p[108] * plg[1][5] +
                   flags->swc[5] *
-                      (p[112] * plg[1][1] + p[113] * plg[1][3] +
-                       p[114] * plg[1][5]) *
-                      cd14) *
-                     sin(dgtr * input->g_long));
+                  (p[112] * plg[1][1] + p[113] * plg[1][3] +
+                   p[114] * plg[1][5]) *
+                  cd14) *
+                 sin(dgtr * input->g_long));
         }
 
         /* ut and mixed ut, longitude */
-        if (flags->sw[12])
+        if(flags->sw[12])
         {
             t[11] =
                 (1.0 + p[95] * plg[0][1]) *
@@ -874,49 +960,51 @@ globe7(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
         }
 
         /* ut, longitude magnetic activity */
-        if (flags->sw[13])
+        if(flags->sw[13])
         {
-            if (flags->sw[9] == -1)
+            if(flags->sw[9] == -1)
             {
-                if (p[51])
+                if(p[51])
                 {
                     t[12] = apt[0] * flags->swc[11] *
-                                (1. + p[132] * plg[0][1]) *
-                                ((p[52] * plg[1][2] + p[98] * plg[1][4] +
-                                  p[67] * plg[1][6]) *
-                                 cos(dgtr * (input->g_long - p[97]))) +
+                            (1. + p[132] * plg[0][1]) *
+                            ((p[52] * plg[1][2] + p[98] * plg[1][4] +
+                              p[67] * plg[1][6]) *
+                             cos(dgtr * (input->g_long - p[97]))) +
                             apt[0] * flags->swc[11] * flags->swc[5] *
-                                (p[133] * plg[1][1] + p[134] * plg[1][3] +
-                                 p[135] * plg[1][5]) *
-                                cd14 * cos(dgtr * (input->g_long - p[136])) +
+                            (p[133] * plg[1][1] + p[134] * plg[1][3] +
+                             p[135] * plg[1][5]) *
+                            cd14 * cos(dgtr * (input->g_long - p[136])) +
                             apt[0] * flags->swc[12] *
-                                (p[55] * plg[0][1] + p[56] * plg[0][3] +
-                                 p[57] * plg[0][5]) *
-                                cos(sr * (input->sec - p[58]));
+                            (p[55] * plg[0][1] + p[56] * plg[0][3] +
+                             p[57] * plg[0][5]) *
+                            cos(sr * (input->sec - p[58]));
                 }
             }
             else
             {
                 t[12] = apdf * flags->swc[11] * (1.0 + p[120] * plg[0][1]) *
-                            ((p[60] * plg[1][2] + p[61] * plg[1][4] +
-                              p[62] * plg[1][6]) *
-                             cos(dgtr * (input->g_long - p[63]))) +
+                        ((p[60] * plg[1][2] + p[61] * plg[1][4] +
+                          p[62] * plg[1][6]) *
+                         cos(dgtr * (input->g_long - p[63]))) +
                         apdf * flags->swc[11] * flags->swc[5] *
-                            (p[115] * plg[1][1] + p[116] * plg[1][3] +
-                             p[117] * plg[1][5]) *
-                            cd14 * cos(dgtr * (input->g_long - p[118])) +
+                        (p[115] * plg[1][1] + p[116] * plg[1][3] +
+                         p[117] * plg[1][5]) *
+                        cd14 * cos(dgtr * (input->g_long - p[118])) +
                         apdf * flags->swc[12] *
-                            (p[83] * plg[0][1] + p[84] * plg[0][3] +
-                             p[85] * plg[0][5]) *
-                            cos(sr * (input->sec - p[75]));
+                        (p[83] * plg[0][1] + p[84] * plg[0][3] +
+                         p[85] * plg[0][5]) *
+                        cos(sr * (input->sec - p[75]));
             }
         }
     }
 
     /* parms not used: 82, 89, 99, 139-149 */
     tinf = p[30];
-    for (i = 0; i < 14; i++)
+    for(i = 0; i < 14; i++)
+    {
         tinf = tinf + fabs(flags->sw[i + 1]) * t[i];
+    }
     return tinf;
 }
 
@@ -928,7 +1016,7 @@ double
 glob7s(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
 {
     /*    VERSION OF GLOBE FOR LOWER ATMOSPHERE 10/26/99
- */
+    */
     double pset = 2.0;
     double t[14];
     double tt;
@@ -937,15 +1025,19 @@ glob7s(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     double dr   = 1.72142E-2;
     double dgtr = 1.74533E-2;
     /* confirm parameter set */
-    if (p[99] == 0)
+    if(p[99] == 0)
+    {
         p[99] = pset;
-    if (p[99] != pset)
+    }
+    if(p[99] != pset)
     {
         printf("Wrong parameter set for glob7s\n");
         return -1;
     }
-    for (j = 0; j < 14; j++)
+    for(j = 0; j < 14; j++)
+    {
         t[j] = 0.0;
+    }
     cd32 = cos(dr * (input->doy - p[31]));
     cd18 = cos(2.0 * dr * (input->doy - p[17]));
     cd14 = cos(dr * (input->doy - p[13]));
@@ -971,7 +1063,7 @@ glob7s(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     t[5] = (p[37] * plg[0][1]) * cd39;
 
     /* DIURNAL */
-    if (flags->sw[7])
+    if(flags->sw[7])
     {
         double t71, t72;
         t71  = p[11] * plg[1][2] * cd14 * flags->swc[5];
@@ -981,7 +1073,7 @@ glob7s(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     }
 
     /* SEMIDIURNAL */
-    if (flags->sw[8])
+    if(flags->sw[8])
     {
         double t81, t82;
         t81  = (p[23] * plg[2][3] + p[35] * plg[2][5]) * cd14 * flags->swc[5];
@@ -991,42 +1083,46 @@ glob7s(double *p, struct nrlmsise_input *input, struct nrlmsise_flags *flags)
     }
 
     /* TERDIURNAL */
-    if (flags->sw[14])
+    if(flags->sw[14])
     {
         t[13] = p[39] * plg[3][3] * s3tloc + p[40] * plg[3][3] * c3tloc;
     }
 
     /* MAGNETIC ACTIVITY */
-    if (flags->sw[9])
+    if(flags->sw[9])
     {
-        if (flags->sw[9] == 1)
+        if(flags->sw[9] == 1)
+        {
             t[8] = apdf * (p[32] + p[45] * plg[0][2] * flags->swc[2]);
-        if (flags->sw[9] == -1)
+        }
+        if(flags->sw[9] == -1)
             t[8] =
                 (p[50] * apt[0] + p[96] * plg[0][2] * apt[0] * flags->swc[2]);
     }
 
     /* LONGITUDINAL */
-    if (!((flags->sw[10] == 0) || (flags->sw[11] == 0) ||
-          (input->g_long <= -1000.0)))
+    if(!((flags->sw[10] == 0) || (flags->sw[11] == 0) ||
+            (input->g_long <= -1000.0)))
     {
         t[10] = (1.0 +
                  plg[0][1] *
-                     (p[80] * flags->swc[5] * cos(dr * (input->doy - p[81])) +
-                      p[85] * flags->swc[6] *
-                          cos(2.0 * dr * (input->doy - p[86]))) +
+                 (p[80] * flags->swc[5] * cos(dr * (input->doy - p[81])) +
+                  p[85] * flags->swc[6] *
+                  cos(2.0 * dr * (input->doy - p[86]))) +
                  p[83] * flags->swc[3] * cos(dr * (input->doy - p[84])) +
                  p[87] * flags->swc[4] * cos(2.0 * dr * (input->doy - p[88]))) *
                 ((p[64] * plg[1][2] + p[65] * plg[1][4] + p[66] * plg[1][6] +
                   p[74] * plg[1][1] + p[75] * plg[1][3] + p[76] * plg[1][5]) *
-                     cos(dgtr * input->g_long) +
+                 cos(dgtr * input->g_long) +
                  (p[90] * plg[1][2] + p[91] * plg[1][4] + p[92] * plg[1][6] +
                   p[77] * plg[1][1] + p[78] * plg[1][3] + p[79] * plg[1][5]) *
-                     sin(dgtr * input->g_long));
+                 sin(dgtr * input->g_long));
     }
     tt = 0;
-    for (i = 0; i < 14; i++)
+    for(i = 0; i < 14; i++)
+    {
         tt += fabs(flags->sw[i + 1]) * t[i];
+    }
     return tt;
 }
 
@@ -1059,44 +1155,56 @@ void gtd7(struct nrlmsise_input  *input,
 
     /* Latitude variation of gravity (none for sw[2]=0) */
     xlat = input->g_lat;
-    if (flags->sw[2] == 0)
+    if(flags->sw[2] == 0)
+    {
         xlat = 45.0;
+    }
     glatf(xlat, &gsurf, &re);
 
     xmm = pdm[2][4];
 
     /* THERMOSPHERE / MESOSPHERE (above zn2[0]) */
-    if (input->alt > zn2[0])
+    if(input->alt > zn2[0])
+    {
         altt = input->alt;
+    }
     else
+    {
         altt = zn2[0];
+    }
 
     tmp        = input->alt;
     input->alt = altt;
     gts7(input, flags, &soutput);
     altt       = input->alt;
     input->alt = tmp;
-    if (flags->sw[0]) /* metric adjustment */
+    if(flags->sw[0])  /* metric adjustment */
+    {
         dm28m = dm28 * 1.0E6;
+    }
     else
+    {
         dm28m = dm28;
+    }
     output->t[0] = soutput.t[0];
     output->t[1] = soutput.t[1];
-    if (input->alt >= zn2[0])
+    if(input->alt >= zn2[0])
     {
-        for (i = 0; i < 9; i++)
+        for(i = 0; i < 9; i++)
+        {
             output->d[i] = soutput.d[i];
+        }
         return;
     }
 
     /*       LOWER MESOSPHERE/UPPER STRATOSPHERE (between zn3[0] and zn2[0])
- *         Temperature at nodes and gradients at end nodes
- *         Inverse temperature a linear function of spherical harmonics
- */
+    *         Temperature at nodes and gradients at end nodes
+    *         Inverse temperature a linear function of spherical harmonics
+    */
     meso_tgn2[0] = meso_tgn1[1];
     meso_tn2[0]  = meso_tn1[4];
     meso_tn2[1]  = pma[0][0] * pavgm[0] /
-                  (1.0 - flags->sw[20] * glob7s(pma[0], input, flags));
+                   (1.0 - flags->sw[20] * glob7s(pma[0], input, flags));
     meso_tn2[2] = pma[1][0] * pavgm[1] /
                   (1.0 - flags->sw[20] * glob7s(pma[1], input, flags));
     meso_tn2[3] =
@@ -1108,15 +1216,15 @@ void gtd7(struct nrlmsise_input  *input,
         meso_tn2[3] * meso_tn2[3] / (pow((pma[2][0] * pavgm[2]), 2.0));
     meso_tn3[0] = meso_tn2[3];
 
-    if (input->alt <= zn3[0])
+    if(input->alt <= zn3[0])
     {
         /*       LOWER STRATOSPHERE AND TROPOSPHERE (below zn3[0])
- *         Temperature at nodes and gradients at end nodes
- *         Inverse temperature a linear function of spherical harmonics
- */
+        *         Temperature at nodes and gradients at end nodes
+        *         Inverse temperature a linear function of spherical harmonics
+        */
         meso_tgn3[0] = meso_tgn2[1];
         meso_tn3[1]  = pma[3][0] * pavgm[3] /
-                      (1.0 - flags->sw[22] * glob7s(pma[3], input, flags));
+                       (1.0 - flags->sw[22] * glob7s(pma[3], input, flags));
         meso_tn3[2] = pma[4][0] * pavgm[4] /
                       (1.0 - flags->sw[22] * glob7s(pma[4], input, flags));
         meso_tn3[3] = pma[5][0] * pavgm[5] /
@@ -1132,8 +1240,10 @@ void gtd7(struct nrlmsise_input  *input,
     /* LINEAR TRANSITION TO FULL MIXING BELOW zn2[0] */
 
     dmc = 0;
-    if (input->alt > zmix)
+    if(input->alt > zmix)
+    {
         dmc = 1.0 - (zn2[0] - input->alt) / (zn2[0] - zmix);
+    }
     dz28 = soutput.d[2];
 
     /**** N2 density ****/
@@ -1180,22 +1290,24 @@ void gtd7(struct nrlmsise_input  *input,
                     28.0 * output->d[2] + 32.0 * output->d[3] +
                     40.0 * output->d[4] + output->d[6] + 14.0 * output->d[7]);
 
-    if (flags->sw[0])
+    if(flags->sw[0])
+    {
         output->d[5] = output->d[5] / 1000;
+    }
 
     /**** temperature at altitude ****/
     dd           = densm(input->alt,
-               1.0,
-               0,
-               &tz,
-               mn3,
-               zn3,
-               meso_tn3,
-               meso_tgn3,
-               mn2,
-               zn2,
-               meso_tn2,
-               meso_tgn2);
+                         1.0,
+                         0,
+                         &tz,
+                         mn3,
+                         zn3,
+                         meso_tn3,
+                         meso_tgn3,
+                         mn2,
+                         zn2,
+                         meso_tn2,
+                         meso_tgn2);
     output->t[1] = tz;
 }
 
@@ -1212,8 +1324,10 @@ void gtd7d(struct nrlmsise_input  *input,
                                28.0 * output->d[2] + 32.0 * output->d[3] +
                                40.0 * output->d[4] + output->d[6] +
                                14.0 * output->d[7] + 16.0 * output->d[8]);
-    if (flags->sw[0])
+    if(flags->sw[0])
+    {
         output->d[5] = output->d[5] / 1000;
+    }
 }
 
 /* ------------------------------------------------------------------- */
@@ -1238,37 +1352,61 @@ void ghp7(struct nrlmsise_input  *input,
     double g, sh;
     int    l;
     pl = log10(press);
-    if (pl >= -5.0)
+    if(pl >= -5.0)
     {
-        if (pl > 2.5)
+        if(pl > 2.5)
+        {
             zi = 18.06 * (3.00 - pl);
-        else if ((pl > 0.075) && (pl <= 2.5))
+        }
+        else if((pl > 0.075) && (pl <= 2.5))
+        {
             zi = 14.98 * (3.08 - pl);
-        else if ((pl > -1) && (pl <= 0.075))
+        }
+        else if((pl > -1) && (pl <= 0.075))
+        {
             zi = 17.80 * (2.72 - pl);
-        else if ((pl > -2) && (pl <= -1))
+        }
+        else if((pl > -2) && (pl <= -1))
+        {
             zi = 14.28 * (3.64 - pl);
-        else if ((pl > -4) && (pl <= -2))
+        }
+        else if((pl > -4) && (pl <= -2))
+        {
             zi = 12.72 * (4.32 - pl);
+        }
         else
+        {
             zi = 25.3 * (0.11 - pl);
+        }
         cl  = input->g_lat / 90.0;
         cl2 = cl * cl;
-        if (input->doy < 182)
+        if(input->doy < 182)
+        {
             cd = (1.0 - (double) input->doy) / 91.25;
+        }
         else
+        {
             cd = ((double) input->doy) / 91.25 - 3.0;
+        }
         ca = 0;
-        if ((pl > -1.11) && (pl <= -0.23))
+        if((pl > -1.11) && (pl <= -0.23))
+        {
             ca = 1.0;
-        if (pl > -0.23)
+        }
+        if(pl > -0.23)
+        {
             ca = (2.79 - pl) / (2.79 + 0.23);
-        if ((pl <= -1.11) && (pl > -3))
+        }
+        if((pl <= -1.11) && (pl > -3))
+        {
             ca = (-2.93 - pl) / (-2.93 + 1.11);
+        }
         z = zi - 4.87 * cl * cd * ca - 1.64 * cl2 * ca + 0.31 * ca * cl;
     }
     else
+    {
         z = 22.0 * pow((pl + 4.0), 2.0) + 110.0;
+    }
 
     /* iteration  loop */
     l = 0;
@@ -1281,12 +1419,16 @@ void ghp7(struct nrlmsise_input  *input,
         xn = output->d[0] + output->d[1] + output->d[2] + output->d[3] +
              output->d[4] + output->d[6] + output->d[7];
         p = bm * xn * output->t[1];
-        if (flags->sw[0])
+        if(flags->sw[0])
+        {
             p = p * 1.0E-6;
+        }
         diff = pl - log10(p);
-        if (sqrt(diff * diff) < test)
+        if(sqrt(diff * diff) < test)
+        {
             return;
-        if (l == ltest)
+        }
+        if(l == ltest)
         {
             printf("ERROR: ghp7 not converging for press %e, diff %e",
                    press,
@@ -1294,17 +1436,24 @@ void ghp7(struct nrlmsise_input  *input,
             return;
         }
         xm = output->d[5] / xn / 1.66E-24;
-        if (flags->sw[0])
+        if(flags->sw[0])
+        {
             xm = xm * 1.0E3;
+        }
         g  = gsurf / (pow((1.0 + z / re), 2.0));
         sh = rgas * output->t[1] / (xm * g);
 
         /* new altitude estimate using scale height */
-        if (l < 6)
+        if(l < 6)
+        {
             z = z - sh * diff * 2.302;
+        }
         else
+        {
             z = z - sh * diff;
-    } while (1 == 1);
+        }
+    }
+    while(1 == 1);
 }
 
 /* ------------------------------------------------------------------- */
@@ -1316,9 +1465,9 @@ void gts7(struct nrlmsise_input  *input,
           struct nrlmsise_output *output)
 {
     /*     Thermospheric portion of NRLMSISE-00
- *     See GTD7 for more extensive comments
- *     alt > 72.5 km!
- */
+    *     See GTD7 for more extensive comments
+    *     alt > 72.5 km!
+    */
     double za;
     int    i, j;
     double ddum, z;
@@ -1351,29 +1500,37 @@ void gts7(struct nrlmsise_input  *input,
     double hc216, hcc232;
     za     = pdl[1][15];
     zn1[0] = za;
-    for (j = 0; j < 9; j++)
+    for(j = 0; j < 9; j++)
+    {
         output->d[j] = 0;
+    }
 
     /* TINF VARIATIONS NOT IMPORTANT BELOW ZA OR ZN1(1) */
-    if (input->alt > zn1[0])
+    if(input->alt > zn1[0])
         tinf =
             ptm[0] * pt[0] * (1.0 + flags->sw[16] * globe7(pt, input, flags));
     else
+    {
         tinf = ptm[0] * pt[0];
+    }
     output->t[0] = tinf;
 
     /*  GRADIENT VARIATIONS NOT IMPORTANT BELOW ZN1(5) */
-    if (input->alt > zn1[4])
+    if(input->alt > zn1[4])
+    {
         g0 = ptm[3] * ps[0] * (1.0 + flags->sw[19] * globe7(ps, input, flags));
+    }
     else
+    {
         g0 = ptm[3] * ps[0];
+    }
     tlb =
         ptm[1] * (1.0 + flags->sw[17] * globe7(pd[3], input, flags)) * pd[3][0];
     s = g0 / (tinf - tlb);
 
     /*      Lower thermosphere temp variations not significant for
- *       density above 300 km */
-    if (input->alt < 300.0)
+    *       density above 300 km */
+    if(input->alt < 300.0)
     {
         meso_tn1[1] = ptm[6] * ptl[0][0] /
                       (1.0 - flags->sw[18] * glob7s(ptl[0], input, flags));
@@ -1383,10 +1540,10 @@ void gts7(struct nrlmsise_input  *input,
                       (1.0 - flags->sw[18] * glob7s(ptl[2], input, flags));
         meso_tn1[4] = ptm[4] * ptl[3][0] /
                       (1.0 - flags->sw[18] * flags->sw[20] *
-                                 glob7s(ptl[3], input, flags));
+                       glob7s(ptl[3], input, flags));
         meso_tgn1[1] = ptm[8] * pma[8][0] *
                        (1.0 + flags->sw[18] * flags->sw[20] *
-                                  glob7s(pma[8], input, flags)) *
+                        glob7s(pma[8], input, flags)) *
                        meso_tn1[4] * meso_tn1[4] /
                        (pow((ptm[4] * ptl[3][0]), 2.0));
     }
@@ -1406,7 +1563,7 @@ void gts7(struct nrlmsise_input  *input,
     /* VARIATION OF TURBOPAUSE HEIGHT */
     zhf = pdl[1][24] *
           (1.0 + flags->sw[5] * pdl[0][24] * sin(dgtr * input->g_lat) *
-                     cos(dr * (input->doy - pt[13])));
+           cos(dr * (input->doy - pt[13])));
     output->t[0] = tinf;
     xmm          = pdm[2][4];
     z            = input->alt;
@@ -1448,7 +1605,7 @@ void gts7(struct nrlmsise_input  *input,
                 zn1,
                 meso_tn1,
                 meso_tgn1);
-    if ((flags->sw[15]) && (z <= altl[2]))
+    if((flags->sw[15]) && (z <= altl[2]))
     {
         /*  Mixed density at Alt */
         dm28 = densu(z,
@@ -1489,7 +1646,7 @@ void gts7(struct nrlmsise_input  *input,
                          meso_tn1,
                          meso_tgn1);
     dd           = output->d[0];
-    if ((flags->sw[15]) && (z < altl[0]))
+    if((flags->sw[15]) && (z < altl[0]))
     {
         /*  Turbopause */
         zh04 = pdm[0][2];
@@ -1509,18 +1666,18 @@ void gts7(struct nrlmsise_input  *input,
                     meso_tgn1);
         /*  Mixed density at Alt */
         dm04  = densu(z,
-                     b04,
-                     tinf,
-                     tlb,
-                     xmm,
-                     0.,
-                     &output->t[1],
-                     ptm[5],
-                     s,
-                     mn1,
-                     zn1,
-                     meso_tn1,
-                     meso_tgn1);
+                      b04,
+                      tinf,
+                      tlb,
+                      xmm,
+                      0.,
+                      &output->t[1],
+                      ptm[5],
+                      s,
+                      mn1,
+                      zn1,
+                      meso_tn1,
+                      meso_tgn1);
         zhm04 = zhm28;
         /*  Net density at Alt */
         output->d[0] = dnet(output->d[0], dm04, zhm04, xmm, 4.);
@@ -1553,7 +1710,7 @@ void gts7(struct nrlmsise_input  *input,
                          meso_tn1,
                          meso_tgn1);
     dd           = output->d[1];
-    if ((flags->sw[15]) && (z <= altl[1]))
+    if((flags->sw[15]) && (z <= altl[1]))
     {
         /*   Turbopause */
         zh16 = pdm[1][2];
@@ -1573,23 +1730,23 @@ void gts7(struct nrlmsise_input  *input,
                     meso_tgn1);
         /*  Mixed density at Alt */
         dm16  = densu(z,
-                     b16,
-                     tinf,
-                     tlb,
-                     xmm,
-                     0.,
-                     &output->t[1],
-                     ptm[5],
-                     s,
-                     mn1,
-                     zn1,
-                     meso_tn1,
-                     meso_tgn1);
+                      b16,
+                      tinf,
+                      tlb,
+                      xmm,
+                      0.,
+                      &output->t[1],
+                      ptm[5],
+                      s,
+                      mn1,
+                      zn1,
+                      meso_tn1,
+                      meso_tgn1);
         zhm16 = zhm28;
         /*  Net density at Alt */
         output->d[1] = dnet(output->d[1], dm16, zhm16, xmm, 16.);
         rl           = pdm[1][1] * pdl[1][16] *
-             (1.0 + flags->sw[1] * pdl[0][23] * (input->f107A - 150.0));
+                       (1.0 + flags->sw[1] * pdl[0][23] * (input->f107A - 150.0));
         hc16         = pdm[1][5] * pdl[1][3];
         zc16         = pdm[1][4] * pdl[1][2];
         hc216        = pdm[1][5] * pdl[1][4];
@@ -1623,9 +1780,9 @@ void gts7(struct nrlmsise_input  *input,
                          meso_tn1,
                          meso_tgn1);
     dd           = output->d[3];
-    if (flags->sw[15])
+    if(flags->sw[15])
     {
-        if (z <= altl[3])
+        if(z <= altl[3])
         {
             /*   Turbopause */
             zh32 = pdm[3][2];
@@ -1645,18 +1802,18 @@ void gts7(struct nrlmsise_input  *input,
                         meso_tgn1);
             /*  Mixed density at Alt */
             dm32  = densu(z,
-                         b32,
-                         tinf,
-                         tlb,
-                         xmm,
-                         0.,
-                         &output->t[1],
-                         ptm[5],
-                         s,
-                         mn1,
-                         zn1,
-                         meso_tn1,
-                         meso_tgn1);
+                          b32,
+                          tinf,
+                          tlb,
+                          xmm,
+                          0.,
+                          &output->t[1],
+                          ptm[5],
+                          s,
+                          mn1,
+                          zn1,
+                          meso_tn1,
+                          meso_tgn1);
             zhm32 = zhm28;
             /*  Net density at Alt */
             output->d[3] = dnet(output->d[3], dm32, zhm32, xmm, 32.);
@@ -1671,7 +1828,7 @@ void gts7(struct nrlmsise_input  *input,
         hcc232 = pdm[3][7] * pdl[0][22];
         zcc32  = pdm[3][6] * pdl[1][21];
         rc32   = pdm[3][3] * pdl[1][23] *
-               (1. + flags->sw[1] * pdl[0][23] * (input->f107A - 150.));
+                 (1. + flags->sw[1] * pdl[0][23] * (input->f107A - 150.));
         /*  Net density corrected at Alt */
         output->d[3] = output->d[3] * ccor2(z, rc32, hcc32, zcc32, hcc232);
     }
@@ -1697,7 +1854,7 @@ void gts7(struct nrlmsise_input  *input,
                          meso_tn1,
                          meso_tgn1);
     dd           = output->d[4];
-    if ((flags->sw[15]) && (z <= altl[4]))
+    if((flags->sw[15]) && (z <= altl[4]))
     {
         /*   Turbopause */
         zh40 = pdm[4][2];
@@ -1717,18 +1874,18 @@ void gts7(struct nrlmsise_input  *input,
                     meso_tgn1);
         /*  Mixed density at Alt */
         dm40  = densu(z,
-                     b40,
-                     tinf,
-                     tlb,
-                     xmm,
-                     0.,
-                     &output->t[1],
-                     ptm[5],
-                     s,
-                     mn1,
-                     zn1,
-                     meso_tn1,
-                     meso_tgn1);
+                      b40,
+                      tinf,
+                      tlb,
+                      xmm,
+                      0.,
+                      &output->t[1],
+                      ptm[5],
+                      s,
+                      mn1,
+                      zn1,
+                      meso_tn1,
+                      meso_tgn1);
         zhm40 = zhm28;
         /*  Net density at Alt */
         output->d[4] = dnet(output->d[4], dm40, zhm40, xmm, 40.);
@@ -1761,7 +1918,7 @@ void gts7(struct nrlmsise_input  *input,
                          meso_tn1,
                          meso_tgn1);
     dd           = output->d[6];
-    if ((flags->sw[15]) && (z <= altl[6]))
+    if((flags->sw[15]) && (z <= altl[6]))
     {
         /*   Turbopause */
         zh01 = pdm[5][2];
@@ -1781,18 +1938,18 @@ void gts7(struct nrlmsise_input  *input,
                     meso_tgn1);
         /*  Mixed density at Alt */
         dm01  = densu(z,
-                     b01,
-                     tinf,
-                     tlb,
-                     xmm,
-                     0.,
-                     &output->t[1],
-                     ptm[5],
-                     s,
-                     mn1,
-                     zn1,
-                     meso_tn1,
-                     meso_tgn1);
+                      b01,
+                      tinf,
+                      tlb,
+                      xmm,
+                      0.,
+                      &output->t[1],
+                      ptm[5],
+                      s,
+                      mn1,
+                      zn1,
+                      meso_tn1,
+                      meso_tgn1);
         zhm01 = zhm28;
         /*  Net density at Alt */
         output->d[6] = dnet(output->d[6], dm01, zhm01, xmm, 1.);
@@ -1830,7 +1987,7 @@ void gts7(struct nrlmsise_input  *input,
                          meso_tn1,
                          meso_tgn1);
     dd           = output->d[7];
-    if ((flags->sw[15]) && (z <= altl[7]))
+    if((flags->sw[15]) && (z <= altl[7]))
     {
         /*   Turbopause */
         zh14 = pdm[6][2];
@@ -1850,18 +2007,18 @@ void gts7(struct nrlmsise_input  *input,
                     meso_tgn1);
         /*  Mixed density at Alt */
         dm14  = densu(z,
-                     b14,
-                     tinf,
-                     tlb,
-                     xmm,
-                     0.,
-                     &output->t[1],
-                     ptm[5],
-                     s,
-                     mn1,
-                     zn1,
-                     meso_tn1,
-                     meso_tgn1);
+                      b14,
+                      tinf,
+                      tlb,
+                      xmm,
+                      0.,
+                      &output->t[1],
+                      ptm[5],
+                      s,
+                      mn1,
+                      zn1,
+                      meso_tn1,
+                      meso_tgn1);
         zhm14 = zhm28;
         /*  Net density at Alt */
         output->d[7] = dnet(output->d[7], dm14, zhm14, xmm, 14.);
@@ -1884,18 +2041,18 @@ void gts7(struct nrlmsise_input  *input,
     db16h        = pdm[7][0] * exp(g16h) * pd[8][0];
     tho          = pdm[7][9] * pdl[0][6];
     dd           = densu(z,
-               db16h,
-               tho,
-               tho,
-               16.,
-               alpha[8],
-               &output->t[1],
-               ptm[5],
-               s,
-               mn1,
-               zn1,
-               meso_tn1,
-               meso_tgn1);
+                         db16h,
+                         tho,
+                         tho,
+                         16.,
+                         alpha[8],
+                         &output->t[1],
+                         ptm[5],
+                         s,
+                         mn1,
+                         zn1,
+                         meso_tn1,
+                         meso_tgn1);
     zsht         = pdm[7][5];
     zmho         = pdm[7][4];
     zsho         = scalh(zmho, 16.0, tho);
@@ -1923,10 +2080,12 @@ void gts7(struct nrlmsise_input  *input,
                  meso_tn1,
                  meso_tgn1);
     (void) ddum; /* silence gcc */
-    if (flags->sw[0])
+    if(flags->sw[0])
     {
-        for (i = 0; i < 9; i++)
+        for(i = 0; i < 9; i++)
+        {
             output->d[i] = output->d[i] * 1.0E6;
+        }
         output->d[5] = output->d[5] / 1000;
     }
 }

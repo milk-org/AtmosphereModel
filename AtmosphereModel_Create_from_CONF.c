@@ -37,14 +37,14 @@ long ATMOSPHEREMODEL_loadRIA(const char *restrict fname, RIAdata *riadat)
     riadat->Z    = 1.0; // default
 
     fp = fopen(fname, "r");
-    if (fp == NULL)
+    if(fp == NULL)
     {
         printf("cannot open file \"%s\"\n", fname);
         return 0;
     }
 
     int r = fscanf(fp, "# %ld %lf %lf\n", &nbpt, &lmin, &lmax);
-    if (r == 3)
+    if(r == 3)
     {
         printf("%ld points from %g m to %g m\n", nbpt, lmin, lmax);
     }
@@ -58,17 +58,17 @@ long ATMOSPHEREMODEL_loadRIA(const char *restrict fname, RIAdata *riadat)
     riadat->lambdamin = lmin;
     riadat->lambdamax = lmax;
 
-    if (riadat->NBpt > 0)
+    if(riadat->NBpt > 0)
     {
         riadat->init   = 1;
         riadat->lambda = (double *) malloc(sizeof(double) * riadat->NBpt);
         riadat->rindex = (double *) malloc(sizeof(double) * riadat->NBpt);
         riadat->abs    = (double *) malloc(sizeof(double) * riadat->NBpt);
 
-        for (long i = 0; i < riadat->NBpt; i++)
+        for(long i = 0; i < riadat->NBpt; i++)
         {
             int r = fscanf(fp, "%lf %lf %lf\n", &v0, &v1, &v2);
-            if (r == 3)
+            if(r == 3)
             {
                 riadat->lambda[i] = v0;
                 riadat->rindex[i] = v1;
@@ -89,7 +89,7 @@ long ATMOSPHEREMODEL_loadRIA(const char *restrict fname, RIAdata *riadat)
 /// read configuration file and create atmosphere model
 
 ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(const char *restrict CONFFILE,
-                                                  float slambda)
+        float slambda)
 {
     ATMOSPHERE_MODEL atm;
 
@@ -150,7 +150,7 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(const char *restrict CONFFILE,
     strcpy(atm.speciesRIA.RIA_species[speciesO].name, "O");
     strcpy(atm.speciesRIA.RIA_species[speciesH].name, "H");
 
-    for (int sp = 0; sp < atm.speciesRIA.NBspecies; sp++)
+    for(int sp = 0; sp < atm.speciesRIA.NBspecies; sp++)
     {
         char RIAfname[200];
         sprintf(RIAfname,
@@ -207,7 +207,7 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(const char *restrict CONFFILE,
 
     atm.speciesRIA.RIA_species[speciesH].Z = 1.0; // TO BE UPDATED
 
-    if (0)
+    if(0)
     {
         // ***************** refractive index as a function of lambda at site ****************************
 
@@ -215,7 +215,7 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(const char *restrict CONFFILE,
 
         DEBUG_TRACEPOINT("Write RindexSite.txt");
         fp = fopen("RindexSite.txt", "w");
-        for (double lambda = 0.5e-6; lambda < 2e-6; lambda *= 1.0 + 1e-3)
+        for(double lambda = 0.5e-6; lambda < 2e-6; lambda *= 1.0 + 1e-3)
         {
             RIAvalue ria =
                 AtmosphereModel_stdAtmModel_ria(atm, atm.SiteAlt, lambda, 0);
@@ -233,16 +233,16 @@ ATMOSPHERE_MODEL AtmosphereModel_Create_from_CONF(const char *restrict CONFFILE,
 
     AtmosphereModel_RefractionPath(atm, slambda, atm.ZenithAngle, 1);
     EXECUTE_SYSTEM_COMMAND("mv refractpath.txt refractpath_%04ld.txt",
-                           (long) (1e9 * slambda + 0.5));
+                           (long)(1e9 * slambda + 0.5));
 
-    if (0)
+    if(0)
     {
         // refractive angle as a function of wavelength
         printf("Computing refraction angle ... \n");
         fflush(stdout);
         FILE *fp;
         fp = fopen("RefractAngle.dat", "w");
-        for (double l = 0.5e-6; l < 10.0e-6; l *= 1.0 + 1e-2)
+        for(double l = 0.5e-6; l < 10.0e-6; l *= 1.0 + 1e-2)
         {
             fprintf(fp,
                     "%20.18f  %.6f\n",

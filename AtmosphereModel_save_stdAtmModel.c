@@ -20,7 +20,7 @@ int AtmosphereModel_save_stdAtmModel(ATMOSPHERE_MODEL *atm,
             "13:N  14:O  15:H    16:density[g/cm3]  17:temperature[K] "
             "18:pressure[stdatm]  19:RH\n");
 
-    for (long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
+    for(long zindex = 0; zindex < ATM_VPROF_NBSTEP; zindex++)
     {
         fprintf(fp,
                 "%6.0f   %15.8g  %15.8g  %15.8g  %15.8g  %15.8g  %15.8g  "

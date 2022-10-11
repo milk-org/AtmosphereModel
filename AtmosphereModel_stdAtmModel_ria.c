@@ -21,9 +21,9 @@
 //
 //
 RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm,
-                                         float            alt,
-                                         float            lambda,
-                                         int              mode)
+        float            alt,
+        float            lambda,
+        int              mode)
 {
     RIAvalue ria;
 
@@ -34,19 +34,19 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm,
 
     double *densarray;
 
-    long zindex = (long) (alt / ATM_VPROF_STEPSIZE);
-    if (zindex > ATM_VPROF_NBSTEP - 2)
+    long zindex = (long)(alt / ATM_VPROF_STEPSIZE);
+    if(zindex > ATM_VPROF_NBSTEP - 2)
     {
         zindex = ATM_VPROF_NBSTEP - 1;
     }
     ifrac = 1.0 * alt / ATM_VPROF_STEPSIZE - zindex;
 
-    if (ifrac < 0)
+    if(ifrac < 0)
     {
         ifrac = 0.0;
     }
 
-    if (ifrac > 1.0)
+    if(ifrac > 1.0)
     {
         ifrac = 1.0;
     }
@@ -58,7 +58,7 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm,
     // densities [cm-3]
     double denstotal = 0.0;
     densarray = (double *) malloc(sizeof(double) * atm.speciesRIA.NBspecies);
-    for (int spindex = 0; spindex < atm.speciesRIA.NBspecies; spindex++)
+    for(int spindex = 0; spindex < atm.speciesRIA.NBspecies; spindex++)
     {
         densarray[spindex] =
             ((1.0 - ifrac) * atm.vprof_dens_species[spindex].val[zindex] +
@@ -73,7 +73,7 @@ RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm,
 
     ria = AirMixture_ria(atm.speciesRIA, lambda, densarray);
 
-    if (mode == 1) // testing
+    if(mode == 1)  // testing
     {
         printf("\n");
         printf("alt = %f m\n", alt);

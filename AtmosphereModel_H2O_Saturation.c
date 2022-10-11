@@ -29,7 +29,7 @@ double AtmosphereModel_H2O_Saturation(double T)
     double a1 = 34.707823;
     double Pn = 611.657;
 
-    if (T > 273.0)
+    if(T > 273.0)
     {
         ups = 1.0 - T / Tc;
         val = Pc * exp(Tc / T *

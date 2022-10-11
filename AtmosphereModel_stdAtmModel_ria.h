@@ -7,9 +7,9 @@
 #define _ATMOSPHEREMODEL_STDATMMODEL_RIA_H
 
 RIAvalue AtmosphereModel_stdAtmModel_ria(ATMOSPHERE_MODEL atm,
-                                         float            alt,
-                                         float            lambda,
-                                         int              mode);
+        float            alt,
+        float            lambda,
+        int              mode);
 
 double AtmosphereModel_stdAtmModel_N(ATMOSPHERE_MODEL atm,
                                      float            alt,
